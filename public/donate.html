@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <meta http-equiv="Cache-Control" content="no-store" />
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Donate | SustainWear</title>
@@ -9,7 +11,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  />
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css">
@@ -31,16 +36,23 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link active" href="donate.html">Donate</a></li>
-          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+
+          <!-- ADMIN-ONLY DASHBOARD -->
+          <li class="nav-item">
+            <a id="dashboardLink" class="nav-link d-none" href="dashboard.html">Dashboard</a>
+          </li>
+
           <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
         </ul>
 
         <div class="d-flex align-items-center gap-3 ms-3">
+          <!-- Signed OUT -->
           <button id="loginBtn" class="google-btn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
             Sign in with Google
           </button>
 
+          <!-- Signed IN -->
           <div id="userMenu" class="dropdown d-none">
             <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2" data-bs-toggle="dropdown">
               <img id="userAvatar" class="avatar" alt="User Avatar">
@@ -57,24 +69,33 @@
 
   <!-- Main Content -->
   <main>
-    <section class="donate-section">
+    <section class="donate-section py-5">
       <div class="container">
         <div class="text-center mb-5">
           <h1 class="fw-bold display-6">Donate Clothes</h1>
-          <p class="text-muted lead">Submit your clothing donations to help support local communities.</p>
+          <p class="text-muted lead">Submit your clothing donations to support local communities.</p>
         </div>
 
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-6">
-            <form id="donationForm" class="shadow-sm p-4 rounded bg-light">
-              
+
+            <form id="donationForm" class="shadow-sm p-4 rounded bg-light needs-validation" novalidate>
+
+              <!-- Donation details -->
+              <h5 class="fw-bold mb-3">Donation details</h5>
+
               <div class="mb-3">
-                <label class="form-label fw-semibold">Item Name</label>
+                <label class="form-label fw-semibold">
+                  Item Name <span class="text-danger">*</span>
+                </label>
                 <input id="itemName" type="text" class="form-control" placeholder="e.g. Winter Jacket" required>
+                <div class="invalid-feedback">Please enter the item name.</div>
               </div>
 
               <div class="mb-3">
-                <label class="form-label fw-semibold">Category</label>
+                <label class="form-label fw-semibold">
+                  Category <span class="text-danger">*</span>
+                </label>
                 <select id="itemCategory" class="form-select" required>
                   <option value="">Select category</option>
                   <option value="men">Men</option>
@@ -82,36 +103,102 @@
                   <option value="children">Children</option>
                   <option value="other">Other</option>
                 </select>
+                <div class="invalid-feedback">Please choose a category.</div>
               </div>
 
               <div class="mb-3">
-                <label class="form-label fw-semibold">Condition</label>
+                <label class="form-label fw-semibold">
+                  Condition <span class="text-danger">*</span>
+                </label>
                 <select id="itemCondition" class="form-select" required>
                   <option value="">Select condition</option>
                   <option value="new">New</option>
                   <option value="good">Good</option>
                   <option value="used">Used</option>
                 </select>
+                <div class="invalid-feedback">Please select the condition.</div>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea id="itemDescription" class="form-control" rows="3" placeholder="Additional details (optional)"></textarea>
+              </div>
+
+              <!-- Pickup details -->
+              <h5 class="fw-bold mb-3 mt-4">Pickup details</h5>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  Pickup Address <span class="text-danger">*</span>
+                </label>
+                <textarea id="pickupAddress" class="form-control" rows="2" placeholder="House number, street, city, postcode" required></textarea>
+                <div class="invalid-feedback">Please enter the pickup address.</div>
               </div>
 
               <div class="mb-3">
-                <label class="form-label fw-semibold">Description</label>
-                <textarea id="itemDescription" class="form-control" rows="3" placeholder="Add additional details..."></textarea>
+                <label class="form-label fw-semibold">
+                  Preferred Pickup Date <span class="text-danger">*</span>
+                </label>
+                <input id="pickupDate" type="date" class="form-control" required>
+                <div class="invalid-feedback">Please choose a pickup date.</div>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label fw-semibold">
+                  Preferred Pickup Time <span class="text-danger">*</span>
+                </label>
+                <input id="pickupTime" type="time" class="form-control" required>
+                <div class="invalid-feedback">Please choose a pickup time.</div>
               </div>
 
               <button type="submit" class="btn btn-primary w-100">Submit Donation</button>
+
             </form>
+
           </div>
         </div>
+
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer> … (unchanged) … </footer>
+  <footer>
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h5 class="fw-bold mb-3">SustainWear</h5>
+          <p class="small text-secondary">Giving clothes a second life — built by students.</p>
+        </div>
 
-  <!-- Firebase App Logic -->
-  <script type="module" src="js/app.js"></script>
+        <div class="col-md-4">
+          <h6 class="fw-bold mb-3 text-uppercase">Quick Links</h6>
+          <ul class="list-unstyled small">
+            <li><a href="/">Home</a></li>
+            <li><a href="donate.html">Donate</a></li>
+            <li><a href="dashboard.html">My Dashboard</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-4">
+          <h6 class="fw-bold mb-3 text-uppercase">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="#"><i class="bi bi-github"></i></a>
+            <a href="#"><i class="bi bi-twitter"></i></a>
+            <a href="#"><i class="bi bi-envelope"></i></a>
+          </div>
+          <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
+        </div>
+      </div>
+
+      <hr class="border-secondary my-4">
+      <div class="text-center footer-note">© 2025 SustainWear — Built with Firebase & teamwork.</div>
+    </div>
+  </footer>
+
+  <!-- Firebase -->
+  <script type="module" src="js/app.js?v=3"></script>
 
   <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -120,9 +207,28 @@
   </script>
 
   <!-- Donation Handler -->
-  <script type="module" src="js/donation.js"></script>
+  <script type="module" src="js/donation.js?v=3"></script>
+
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!--Bootstrap validation helper -->
+  <script>
+  (() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+  </script>
+
 </body>
 </html>

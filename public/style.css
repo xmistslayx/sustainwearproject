@@ -88,3 +88,69 @@ footer hr {
 .form-control, .form-select {
   border-radius: .5rem;
 }
+
+/* ===== ADMIN DASHBOARD LAYOUT ===== */
+
+.admin-body {
+  background-color: #f1f3f5;
+}
+
+.admin-wrapper {
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: 260px;
+  background-color: #212529;
+  color: #f8f9fa;
+  padding: 1.5rem 1.25rem;
+}
+
+.admin-brand {
+  font-size: 1rem;
+}
+
+.admin-brand i {
+  font-size: 1.4rem;
+}
+
+.admin-nav-link {
+  color: #ced4da;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+}
+
+.admin-nav-link i {
+  font-size: 1.1rem;
+}
+
+.admin-nav-link:hover {
+  color: #ffffff;
+}
+
+.admin-nav-link.active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Main */
+.admin-main {
+  background-color: #f8fafc;
+  padding: 1.5rem;
+}
+
+.admin-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-content {
+  padding: 0;
+}
+
+/* Stat cards */
+.admin-stat-card {
+  border-radius: 0.75rem;
+}

@@ -13,9 +13,9 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// -----------------------------
-// 1) THANK-YOU EMAIL ON DONATION
-// -----------------------------
+
+// Thank you eamil on donation 
+
 exports.sendThankYouEmail = functions.firestore
   .document("donations/{donationId}")
   .onCreate(async (snap, context) => {
@@ -42,9 +42,9 @@ exports.sendThankYouEmail = functions.firestore
     }
   });
 
-// ----------------------------------------------------------
-// 2) CONFIRMATION EMAIL WHEN PICKUP SLOT STATUS = "accepted"
-// ----------------------------------------------------------
+
+
+
 exports.sendPickupConfirmation = functions.firestore
   .document("donations/{donationId}")
   .onUpdate(async (change, context) => {
