@@ -1,4 +1,3 @@
-// public/js/dashboard.js
 
 import { firebaseConfig } from "./firebaseConfig.js";
 import {
@@ -54,9 +53,8 @@ function formatDate(dateValue) {
   }
 }
 
-// -------------------------------------------------------
 //  ADMIN CHECK + DATA LOAD
-// -------------------------------------------------------
+
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     alert("You need to be signed in as an admin to access the dashboard.");
@@ -74,7 +72,7 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    // At this point we know the user is an admin
+  
     await loadDashboardData();
 
   } catch (err) {
@@ -84,9 +82,8 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// -------------------------------------------------------
 //  LOAD DASHBOARD DATA
-// -------------------------------------------------------
+
 async function loadDashboardData() {
   try {
     const donationsSnap = await getDocs(collection(db, "donations"));
@@ -114,9 +111,8 @@ async function loadDashboardData() {
   }
 }
 
-// -------------------------------------------------------
 //  SUMMARY CARDS
-// -------------------------------------------------------
+
 function updateSummaryCards(donations) {
   const total = donations.length;
 
@@ -132,18 +128,19 @@ function updateSummaryCards(donations) {
     }
   });
 
-  totalDonationsEl.textContent   = total;
-  pendingPickupsEl.textContent   = pending;
-  completedPickupsEl.textContent = completed;
+  if (totalDonationsEl)   totalDonationsEl.textContent   = total;
+  if (pendingPickupsEl)   pendingPickupsEl.textContent   = pending;
+  if (completedPickupsEl) completedPickupsEl.textContent = completed;
 
-  donationCountLabel.textContent = `${total} record${total === 1 ? "" : "s"}`;
+  if (donationCountLabel) {
+    donationCountLabel.textContent = `${total} record${total === 1 ? "" : "s"}`;
+  }
 }
 
-// -------------------------------------------------------
 //  CHARTS
-// -------------------------------------------------------
+
 function updateCharts(donations) {
-  // Category counts
+  // Category counts (now using items[] if present)
   const categories = ["men", "women", "children", "other"];
   const categoryCounts = {
     men: 0,
@@ -153,12 +150,21 @@ function updateCharts(donations) {
   };
 
   donations.forEach(d => {
-    const cat = (d.itemCategory || "").toLowerCase();
-    if (categories.includes(cat)) {
-      categoryCounts[cat]++;
-    } else {
-      categoryCounts.other++;
+    let items = [];
+    if (Array.isArray(d.items) && d.items.length) {
+      items = d.items;
+    } else if (d.itemCategory) {
+      items = [{ itemCategory: d.itemCategory }];
     }
+
+    items.forEach(item => {
+      const cat = (item.itemCategory || "").toLowerCase();
+      if (categories.includes(cat)) {
+        categoryCounts[cat]++;
+      } else {
+        categoryCounts.other++;
+      }
+    });
   });
 
   const categoryData = categories.map(c => categoryCounts[c]);
@@ -247,9 +253,8 @@ function updateCharts(donations) {
   }
 }
 
-// -------------------------------------------------------
-//  TABLE RENDER + STATUS UPDATE
-// -------------------------------------------------------
+//  TABLE RENDER + STATUS UPDATE + SHOW ITEMS
+
 function populateDonationsTable(donations) {
   if (!donations.length) {
     donationsTableBody.innerHTML = `
@@ -265,7 +270,21 @@ function populateDonationsTable(donations) {
   donationsTableBody.innerHTML = "";
 
   donations.forEach(d => {
-    const row = document.createElement("tr");
+    // Prepare items array (new or legacy)
+    let items = [];
+    if (Array.isArray(d.items) && d.items.length) {
+      items = d.items;
+    } else {
+      items = [{
+        itemName:      d.itemName || "Untitled item",
+        itemCategory:  d.itemCategory || "other",
+        itemCondition: d.itemCondition || "unknown",
+        itemDescription: d.itemDescription || ""
+      }];
+    }
+
+    const firstItem = items[0];
+    const extraCount = items.length - 1;
 
     const createdAtDisplay = d.createdAt ? formatDate(d.createdAt) : "—";
     const pickupDisplay = d.pickupDate
@@ -274,17 +293,30 @@ function populateDonationsTable(donations) {
 
     const statusValue = (d.pickupStatus || "pending").toLowerCase();
 
+    // Main row
+    const row = document.createElement("tr");
+
     row.innerHTML = `
       <td>
-        <div class="fw-semibold small">${d.itemName || "Untitled item"}</div>
+        <div class="fw-semibold small">
+          ${firstItem.itemName || "Untitled item"} 
+          (${(firstItem.itemCategory || "other")} – ${(firstItem.itemCondition || "unknown")})
+        </div>
         <div class="text-muted small">${createdAtDisplay}</div>
+        ${
+          extraCount > 0
+            ? `<button type="button" class="btn btn-link btn-sm p-0 toggle-items-btn" data-id="${d.id}">
+                 Show ${extraCount} more
+               </button>`
+            : ""
+        }
       </td>
-      <td class="small text-capitalize">${d.itemCategory || "—"}</td>
-      <td class="small text-capitalize">${d.itemCondition || "—"}</td>
       <td class="small">
         <div>${d.name || "Unknown donor"}</div>
         <div class="text-muted small">${d.email || ""}</div>
       </td>
+      <td class="small text-capitalize">${firstItem.itemCategory || "—"}</td>
+      <td class="small text-capitalize">${firstItem.itemCondition || "—"}</td>
       <td class="small">${pickupDisplay}</td>
       <td>
         <select class="form-select form-select-sm donation-status-select" data-id="${d.id}">
@@ -297,6 +329,36 @@ function populateDonationsTable(donations) {
     `;
 
     donationsTableBody.appendChild(row);
+
+    // Details row (hidden by default)
+    const detailsRow = document.createElement("tr");
+    detailsRow.classList.add("donation-items-row", "d-none");
+    detailsRow.setAttribute("data-details-for", d.id);
+
+    const itemsHtml = items.map((item, idx) => `
+      <div class="mb-2">
+        <div class="fw-semibold small">
+          ${item.itemName || "Untitled item"}
+          (${(item.itemCategory || "other")} – ${(item.itemCondition || "unknown")})
+        </div>
+        ${
+          item.itemDescription
+            ? `<div class="text-muted small">Description: ${item.itemDescription}</div>`
+            : ""
+        }
+      </div>
+      ${idx < items.length - 1 ? "<hr class='my-1'>" : ""}
+    `).join("");
+
+    detailsRow.innerHTML = `
+      <td colspan="6">
+        <div class="small">
+          ${itemsHtml}
+        </div>
+      </td>
+    `;
+
+    donationsTableBody.appendChild(detailsRow);
   });
 
   // Attach change handlers for all selects
@@ -317,6 +379,26 @@ function populateDonationsTable(donations) {
       } catch (err) {
         console.error("Error updating status:", err);
         alert("Failed to update status. Please try again.");
+      }
+    });
+  });
+
+  // Attach show/hide handlers for "Show more" buttons
+  const toggleButtons = donationsTableBody.querySelectorAll(".toggle-items-btn");
+  toggleButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id");
+      const detailsRow = donationsTableBody.querySelector(`tr[data-details-for="${id}"]`);
+      if (!detailsRow) return;
+
+      const isHidden = detailsRow.classList.contains("d-none");
+      if (isHidden) {
+        detailsRow.classList.remove("d-none");
+        btn.textContent = "Hide items";
+      } else {
+        detailsRow.classList.add("d-none");
+        const extra = detailsRow.querySelectorAll(".fw-semibold.small").length - 1;
+        btn.textContent = extra > 0 ? `Show ${extra} more` : "Show items";
       }
     });
   });

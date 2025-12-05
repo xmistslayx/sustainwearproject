@@ -4,7 +4,7 @@ import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebase
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,      // 🔹 use popup instead of redirect
+  signInWithPopup,
   signOut,
   onAuthStateChanged,
   setPersistence,
@@ -22,12 +22,12 @@ import {
 
 console.log("HOST:", location.hostname);
 
-// Initialize Firebase safely
+// Initialise Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Use emulators ONLY on localhost
+// Use emulators locally
 if (location.hostname === "localhost") {
   console.log("Using AUTH/FIRESTORE emulators");
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
@@ -43,80 +43,52 @@ const logoutBtn = document.getElementById("logoutBtn");
 const userMenu = document.getElementById("userMenu");
 const userName = document.getElementById("userName");
 const userAvatar = document.getElementById("userAvatar");
-const dashboardLink = document.getElementById("dashboardLink");
-const ctaDonate = document.getElementById("ctaDonate");
 
+// No more dashboardLink (admin handled elsewhere)
+
+// Set up auth
 async function initAuth() {
   try {
     await setPersistence(auth, browserLocalPersistence);
 
-    // LOGIN (popup)
-    loginBtn?.addEventListener("click", async () => {
-      console.log("Starting Google popup login…");
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        console.log("Popup login success:", user.email);
-      } catch (err) {
-        console.error("Popup login error:", err.code, err.message, err.customData);
-        alert("Google sign-in failed: " + (err.message || err.code));
-      }
+    // LOGIN BUTTON → now goes to login.html, NOT popup
+    loginBtn?.addEventListener("click", () => {
+      window.location.href = "/login.html";
     });
 
     // LOGOUT
     logoutBtn?.addEventListener("click", () => {
-      console.log("Signing out…");
-      signOut(auth).catch(err => console.error("Sign-out error:", err));
-    });
-
-    // Protect donate button
-    ctaDonate?.addEventListener("click", (e) => {
-      if (!auth.currentUser) {
-        e.preventDefault();
-        loginBtn.click();
-      }
+      signOut(auth);
     });
 
     // Auth state listener
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        console.log("User signed out");
         loginBtn?.classList.remove("d-none");
         userMenu?.classList.add("d-none");
-        dashboardLink?.classList.add("d-none");
         return;
       }
 
-      console.log("Signed in as:", user.email);
-
       loginBtn?.classList.add("d-none");
       userMenu?.classList.remove("d-none");
+
       userName.textContent = user.displayName || user.email;
       userAvatar.src = user.photoURL || "https://ui-avatars.com/api/?name=U";
 
-      // Check / create user record
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+      // Check/create user profile WITHOUT role
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
 
       if (!snap.exists()) {
-        await setDoc(userRef, {
+        await setDoc(ref, {
           email: user.email,
           name: user.displayName || "",
-          role: "DONOR",
+          phone: "",
+          address: "",
           createdAt: Date.now(),
         });
-        console.log("Created new user record");
-      }
-
-      const userData = snap.exists() ? snap.data() : { role: "DONOR" };
-
-      if (userData.role === "ADMIN") {
-        dashboardLink?.classList.remove("d-none");
-      } else {
-        dashboardLink?.classList.add("d-none");
       }
     });
-
   } catch (err) {
     console.error("Auth init error:", err);
   }

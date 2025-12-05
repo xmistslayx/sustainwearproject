@@ -5,25 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Dashboard | SustainWear</title>
 
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-
-  <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-  />
-
-  <!-- Global Styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
-
   <link rel="icon" href="data:,">
 </head>
+
 <body>
-  <!-- Navbar (same as other pages) -->
+
   <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold" href="/">SustainWear</a>
@@ -32,27 +21,27 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+
+        <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
+          <!-- Always visible -->
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="donate.html">Donate</a></li>
+          <li class="nav-item"><a class="nav-link" href="aboutpage.html">About Us</a></li>
 
-          <!-- ADMIN-ONLY DASHBOARD LINK -->
-          <li class="nav-item">
-            <a id="dashboardLink" class="nav-link d-none" href="dashboard.html">Dashboard</a>
-          </li>
-
-          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <!-- Admin only -->
+          <span id="nav-admin" class="d-none">
+            <li class="nav-item">
+              <a id="dashboardLink" class="nav-link active" href="dashboard.html">Dashboard</a>
+            </li>
+          </span>
         </ul>
 
         <div class="d-flex align-items-center gap-3 ms-3">
-          <!-- Signed OUT -->
           <button id="loginBtn" class="google-btn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
             Sign in with Google
           </button>
 
-          <!-- Signed IN -->
           <div id="userMenu" class="dropdown d-none">
             <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2" data-bs-toggle="dropdown">
               <img id="userAvatar" class="avatar" alt="User Avatar">
@@ -63,29 +52,24 @@
             </ul>
           </div>
         </div>
+
       </div>
     </div>
   </nav>
 
-  <!-- MAIN DASHBOARD CONTENT -->
   <main class="py-4">
     <div class="container">
 
-      <!-- Header -->
       <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 fw-bold mb-1">Admin dashboard</h1>
-          <p class="text-muted mb-0 small">
-            Overview of clothing donations and pickup activity.
-          </p>
+          <p class="text-muted mb-0 small">Overview of clothing donations and pickup activity.</p>
         </div>
-        <span class="badge bg-dark-subtle text-dark small">
-          Admin only
-        </span>
+        <span class="badge bg-dark-subtle text-dark small">Admin only</span>
       </div>
 
-      <!-- SUMMARY CARDS -->
       <div class="row g-3 mb-4">
+
         <div class="col-md-4">
           <div class="card shadow-sm border-0 h-100">
             <div class="card-body d-flex align-items-center justify-content-between">
@@ -127,18 +111,43 @@
             </div>
           </div>
         </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <p class="text-muted text-uppercase small mb-1">Charity Requests</p>
+                <h4 class="fw-bold mb-0" id="charityRequestsCount">0</h4>
+              </div>
+              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+                <i class="bi bi-clipboard-check fs-5 text-info"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- CHARTS ROW -->
+      <!-- You can hook this to the same dashboard.js / future requests view -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="fw-bold mb-1">Manage Charity Requests</h6>
+            <p class="small text-muted mb-0">Review, approve, and track charity stock requests.</p>
+          </div>
+          <!-- Could scroll to a section on this page if you add an id -->
+          <a href="#charity-requests" class="btn btn-primary btn-sm">View Requests</a>
+        </div>
+      </div>
+
       <div class="row g-4 mb-4">
+
         <div class="col-lg-6">
           <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
               <h6 class="fw-bold mb-3">Donations per category</h6>
               <canvas id="categoryChart" height="200"></canvas>
-              <p class="small text-muted mt-2 mb-0">
-                Shows how many donations are coming from each clothing category.
-              </p>
+              <p class="small text-muted mt-2 mb-0">Shows how many donations are coming from each clothing category.</p>
             </div>
           </div>
         </div>
@@ -148,16 +157,14 @@
             <div class="card-body">
               <h6 class="fw-bold mb-3">Pickup status breakdown</h6>
               <canvas id="statusChart" height="200"></canvas>
-              <p class="small text-muted mt-2 mb-0">
-                Overview of pending, scheduled, completed, and cancelled pickups.
-              </p>
+              <p class="small text-muted mt-2 mb-0">Overview of pending, scheduled, completed, and cancelled pickups.</p>
             </div>
           </div>
         </div>
+
       </div>
 
-      <!-- DONATIONS TABLE -->
-      <div class="card shadow-sm border-0">
+      <div class="card shadow-sm border-0" id="charity-requests">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold mb-0">All donations</h6>
@@ -169,18 +176,16 @@
               <thead class="table-light">
                 <tr>
                   <th>Item</th>
+                  <th>Donor</th>
                   <th>Category</th>
                   <th>Condition</th>
-                  <th>Donor</th>
                   <th>Pickup date</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody id="donationsTableBody">
                 <tr>
-                  <td colspan="6" class="text-center text-muted py-4">
-                    Loading donations…
-                  </td>
+                  <td colspan="6" class="text-center text-muted py-4">Loading donations…</td>
                 </tr>
               </tbody>
             </table>
@@ -195,24 +200,25 @@
     </div>
   </main>
 
-  <!-- Footer (same as other pages) -->
   <footer>
     <div class="container">
       <div class="row g-4">
         <div class="col-md-4">
           <h5 class="fw-bold mb-3">SustainWear</h5>
-          <p class="small text-secondary">
-            Giving clothes a second life — built by students to promote sustainable fashion and community support.
-          </p>
+          <p class="small text-secondary">Giving clothes a second life — built by students to promote sustainable fashion and community support.</p>
         </div>
 
         <div class="col-md-4">
           <h6 class="fw-bold mb-3 text-uppercase">Quick Links</h6>
           <ul class="list-unstyled small">
+            <!-- Always -->
             <li><a href="/">Home</a></li>
-            <li><a href="donate.html">Donate</a></li>
-            <li><a href="dashboard.html">My Dashboard</a></li>
-            <li><a href="about.html">About</a></li>
+            <li><a href="aboutpage.html">About Us</a></li>
+
+            <!-- Admin only -->
+            <span id="footer-admin" class="d-none">
+              <li><a href="dashboard.html">Dashboard</a></li>
+            </span>
           </ul>
         </div>
 
@@ -221,7 +227,7 @@
           <div class="d-flex gap-3 fs-5">
             <a href="#"><i class="bi bi-github"></i></a>
             <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="#"><i class="bi bi-envelope"></i></a>
+            <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
           </div>
           <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
         </div>
@@ -234,16 +240,53 @@
     </div>
   </footer>
 
-  <!-- Firebase / App logic (auth, navbar, etc.) -->
+  <!-- Global auth -->
   <script type="module" src="js/app.js"></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Role-based nav/footer (admin only here) -->
+  <script type="module">
+    import { getAuth, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc }
+      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  <!-- Dashboard logic -->
+    const auth = getAuth();
+    const db = getFirestore();
+
+    const navAdmin = document.getElementById("nav-admin");
+    const footerAdmin = document.getElementById("footer-admin");
+
+    [navAdmin, footerAdmin].forEach(el => el?.classList.add("d-none"));
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert("You need to be signed in as an admin to access the dashboard.");
+        window.location.href = "/";
+        return;
+      }
+
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (!snap.exists() || snap.data().role !== "ADMIN") {
+          alert("You do not have permission to view this page.");
+          window.location.href = "/";
+          return;
+        }
+
+        navAdmin?.classList.remove("d-none");
+        footerAdmin?.classList.remove("d-none");
+      } catch (err) {
+        console.error("Error checking admin role:", err);
+        alert("Could not verify admin access.");
+        window.location.href = "/";
+      }
+    });
+  </script>
+
+  <!-- Chart.js + dashboard logic -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="js/dashboard.js"></script>
 
-  <!-- Highlight current nav link -->
   <script>
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     document.querySelectorAll(".nav-link").forEach(link => {
@@ -255,7 +298,7 @@
     });
   </script>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
