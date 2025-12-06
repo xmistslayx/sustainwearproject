@@ -13,292 +13,298 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="/">SustainWear</a>
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm py-2">
+  <div class="container">
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <a class="navbar-brand fw-bold" href="/">SustainWear</a>
 
-      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
-          <!-- Always visible -->
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="aboutpage.html">About Us</a></li>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-          <!-- Admin only -->
-          <span id="nav-admin" class="d-none">
-            <li class="nav-item">
-              <a id="dashboardLink" class="nav-link active" href="dashboard.html">Dashboard</a>
-            </li>
-          </span>
-        </ul>
+      <!-- NAV MENU -->
+      <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
 
-        <div class="d-flex align-items-center gap-3 ms-3">
-          <button id="loginBtn" class="google-btn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
-            Sign in with Google
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+
+        <!-- ADMIN ONLY -->
+        <li id="nav-admin" class="nav-item d-none">
+          <a class="nav-link active" href="dashboard.html">Dashboard</a>
+        </li>
+
+        <li class="nav-item"><a class="nav-link" href="aboutpage.html">About Us</a></li>
+
+      </ul>
+
+      <!-- AUTH MENU -->
+      <div class="d-flex align-items-center">
+
+        <!-- LOGGED OUT -->
+        <a id="loginBtn" href="/login.html" class="btn btn-outline-primary px-3 py-1">
+          Login / Register
+        </a>
+
+        <!-- LOGGED IN -->
+        <div id="userMenu" class="dropdown d-none">
+          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2"
+                  data-bs-toggle="dropdown">
+            <img id="userAvatar" class="avatar">
+            <span id="userName" class="d-none d-sm-inline small"></span>
           </button>
-
-          <div id="userMenu" class="dropdown d-none">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2" data-bs-toggle="dropdown">
-              <img id="userAvatar" class="avatar" alt="User Avatar">
-              <span id="userName" class="d-none d-sm-inline small"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </nav>
-
-  <main class="py-4">
-    <div class="container">
-
-      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-        <div>
-          <h1 class="h3 fw-bold mb-1">Admin dashboard</h1>
-          <p class="text-muted mb-0 small">Overview of clothing donations and pickup activity.</p>
-        </div>
-        <span class="badge bg-dark-subtle text-dark small">Admin only</span>
-      </div>
-
-      <div class="row g-3 mb-4">
-
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Total donations</p>
-                <h4 class="fw-bold mb-0" id="totalDonations">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-bag-heart fs-5 text-success"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Pending pickups</p>
-                <h4 class="fw-bold mb-0" id="pendingPickups">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-clock-history fs-5 text-warning"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Completed pickups</p>
-                <h4 class="fw-bold mb-0" id="completedPickups">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-check2-circle fs-5 text-primary"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Charity Requests</p>
-                <h4 class="fw-bold mb-0" id="charityRequestsCount">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-clipboard-check fs-5 text-info"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- You can hook this to the same dashboard.js / future requests view -->
-      <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="fw-bold mb-1">Manage Charity Requests</h6>
-            <p class="small text-muted mb-0">Review, approve, and track charity stock requests.</p>
-          </div>
-          <!-- Could scroll to a section on this page if you add an id -->
-          <a href="#charity-requests" class="btn btn-primary btn-sm">View Requests</a>
-        </div>
-      </div>
-
-      <div class="row g-4 mb-4">
-
-        <div class="col-lg-6">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">Donations per category</h6>
-              <canvas id="categoryChart" height="200"></canvas>
-              <p class="small text-muted mt-2 mb-0">Shows how many donations are coming from each clothing category.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">Pickup status breakdown</h6>
-              <canvas id="statusChart" height="200"></canvas>
-              <p class="small text-muted mt-2 mb-0">Overview of pending, scheduled, completed, and cancelled pickups.</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="card shadow-sm border-0" id="charity-requests">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0">All donations</h6>
-            <span class="small text-muted" id="donationCountLabel">0 records</span>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table table-sm align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th>Item</th>
-                  <th>Donor</th>
-                  <th>Category</th>
-                  <th>Condition</th>
-                  <th>Pickup date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="donationsTableBody">
-                <tr>
-                  <td colspan="6" class="text-center text-muted py-4">Loading donations…</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="small text-muted mb-0">
-            Only admins can view and update donation records. Donors can only see their own submissions.
-          </p>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <h5 class="fw-bold mb-3">SustainWear</h5>
-          <p class="small text-secondary">Giving clothes a second life — built by students to promote sustainable fashion and community support.</p>
-        </div>
-
-        <div class="col-md-4">
-          <h6 class="fw-bold mb-3 text-uppercase">Quick Links</h6>
-          <ul class="list-unstyled small">
-            <!-- Always -->
-            <li><a href="/">Home</a></li>
-            <li><a href="aboutpage.html">About Us</a></li>
-
-            <!-- Admin only -->
-            <span id="footer-admin" class="d-none">
-              <li><a href="dashboard.html">Dashboard</a></li>
-            </span>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
           </ul>
         </div>
 
-        <div class="col-md-4">
-          <h6 class="fw-bold mb-3 text-uppercase">Connect</h6>
-          <div class="d-flex gap-3 fs-5">
-            <a href="#"><i class="bi bi-github"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="py-4">
+  <div class="container">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">Admin dashboard</h1>
+        <p class="text-muted mb-0 small">Overview of clothing donations and pickup activity.</p>
+      </div>
+      <span class="badge bg-dark-subtle text-dark small">Admin only</span>
+    </div>
+
+    <!-- DASHBOARD CARDS -->
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Total donations</p>
+              <h4 class="fw-bold mb-0" id="totalDonations">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-bag-heart fs-5 text-success"></i>
+            </div>
           </div>
-          <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
         </div>
       </div>
 
-      <hr class="border-secondary my-4">
-      <div class="text-center footer-note">
-        © 2025 SustainWear — Built with Firebase, Bootstrap, and teamwork.
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Pending pickups</p>
+              <h4 class="fw-bold mb-0" id="pendingPickups">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-clock-history fs-5 text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Completed pickups</p>
+              <h4 class="fw-bold mb-0" id="completedPickups">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-check2-circle fs-5 text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Charity Requests</p>
+              <h4 class="fw-bold mb-0" id="charityRequestsCount">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-clipboard-check fs-5 text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- REQUESTS MODULE -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <h6 class="fw-bold mb-1">Manage Charity Requests</h6>
+          <p class="small text-muted mb-0">Review, approve, and track charity stock requests.</p>
+        </div>
+        <a href="#charity-requests" class="btn btn-primary btn-sm">View Requests</a>
       </div>
     </div>
-  </footer>
 
-  <!-- Global auth -->
-  <script type="module" src="js/app.js"></script>
+    <!-- CHARTS -->
+    <div class="row g-4 mb-4">
 
-  <!-- Role-based nav/footer (admin only here) -->
-  <script type="module">
-    import { getAuth, onAuthStateChanged }
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc }
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Donations per category</h6>
+            <canvas id="categoryChart" height="200"></canvas>
+            <p class="small text-muted mt-2 mb-0">Shows how many donations are coming from each clothing category.</p>
+          </div>
+        </div>
+      </div>
 
-    const auth = getAuth();
-    const db = getFirestore();
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Pickup status breakdown</h6>
+            <canvas id="statusChart" height="200"></canvas>
+            <p class="small text-muted mt-2 mb-0">Overview of pending, scheduled, completed, and cancelled pickups.</p>
+          </div>
+        </div>
+      </div>
 
-    const navAdmin = document.getElementById("nav-admin");
-    const footerAdmin = document.getElementById("footer-admin");
+    </div>
 
-    [navAdmin, footerAdmin].forEach(el => el?.classList.add("d-none"));
+    <!-- DONATION TABLE -->
+    <div class="card shadow-sm border-0" id="charity-requests">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0">All donations</h6>
+          <span class="small text-muted" id="donationCountLabel">0 records</span>
+        </div>
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        alert("You need to be signed in as an admin to access the dashboard.");
-        window.location.href = "/";
-        return;
-      }
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Item</th>
+                <th>Donor</th>
+                <th>Category</th>
+                <th>Condition</th>
+                <th>Pickup date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="donationsTableBody">
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">Loading donations…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      try {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (!snap.exists() || snap.data().role !== "ADMIN") {
-          alert("You do not have permission to view this page.");
-          window.location.href = "/";
-          return;
-        }
+        <p class="small text-muted mb-0">
+          Only admins can view and update donation records. Donors can only see their own submissions.
+        </p>
+      </div>
+    </div>
 
-        navAdmin?.classList.remove("d-none");
-        footerAdmin?.classList.remove("d-none");
-      } catch (err) {
-        console.error("Error checking admin role:", err);
-        alert("Could not verify admin access.");
-        window.location.href = "/";
-      }
-    });
-  </script>
+  </div>
+</main>
 
-  <!-- Chart.js + dashboard logic -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="js/dashboard.js"></script>
 
-  <script>
-    const currentPage = window.location.pathname.split("/").pop() || "index.html";
-    document.querySelectorAll(".nav-link").forEach(link => {
-      const linkPage = link.getAttribute("href");
-      if (currentPage === linkPage) {
-        link.classList.add("active");
-        link.removeAttribute("href");
-      }
-    });
-  </script>
+<!-- ================= FOOTER ================= -->
+<footer class="mt-5 pt-5 pb-3 bg-dark text-light">
+  <div class="container">
+    <div class="row g-4">
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      <div class="col-md-4">
+        <h5 class="fw-bold mb-3">SustainWear</h5>
+        <p class="small text-secondary">
+          Giving clothes a second life — built by students to promote
+          sustainable fashion and community support.
+        </p>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3">Quick Links</h6>
+        <ul class="list-unstyled small" id="footer-links"></ul>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3">Connect</h6>
+        <div class="d-flex gap-3 fs-5">
+          <a href="#"><i class="bi bi-github"></i></a>
+          <a href="#"><i class="bi bi-twitter"></i></a>
+          <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
+        </div>
+        <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
+      </div>
+
+    </div>
+
+    <hr class="border-secondary my-4">
+
+    <div class="text-center small text-secondary">
+      © 2025 SustainWear — Built with Firebase, Bootstrap, and teamwork.
+    </div>
+  </div>
+</footer>
+
+
+<!-- ================= GLOBAL AUTH ================= -->
+<script type="module" src="js/app.js"></script>
+
+<!-- ================= ROLE-BASED NAV / ADMIN CHECK ================= -->
+<script type="module">
+  import { getAuth, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc }
+
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const auth = getAuth();
+  const db = getFirestore();
+
+  const adminNav = document.getElementById("nav-admin");
+  const footerLinks = document.getElementById("footer-links");
+
+  function setFooter(role) {
+    footerLinks.innerHTML = `
+      <li><a href="/">Home</a></li>
+      <li><a href="aboutpage.html">About Us</a></li>
+    `;
+
+    if (role === "ADMIN") {
+      footerLinks.innerHTML += `<li><a href="dashboard.html">Dashboard</a></li>`;
+    }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("You must be signed in as an admin.");
+      window.location.href = "/";
+      return;
+    }
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if (!snap.exists() || snap.data().role !== "ADMIN") {
+      alert("You do not have permission to view this page.");
+      window.location.href = "/";
+      return;
+    }
+
+    adminNav.classList.remove("d-none");
+    setFooter("ADMIN");
+  });
+</script>
+
+<!-- ================= CHARTS + DASHBOARD LOGIC ================= -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="js/dashboard.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

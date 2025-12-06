@@ -23,319 +23,237 @@
 </head>
 
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="/">SustainWear</a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">SustainWear</a>
 
-      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <!-- NAV LINKS -->
-        <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-          <!-- Always visible -->
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="aboutpage.html">About Us</a></li>
+      <!-- NAV LINKS -->
+      <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
 
-          <!-- Guests + donors -->
-          <span id="nav-donor" class="d-none">
-            <li class="nav-item"><a class="nav-link active" href="donate.html">Donate</a></li>
-          </span>
+        <!-- Always visible -->
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
 
-          <!-- CHARITY ONLY -->
-          <span id="nav-charity" class="d-none">
-            <li class="nav-item"><a class="nav-link" href="/Charity/stock.html">Stock</a></li>
-            <li class="nav-item"><a class="nav-link" href="/Charity/cart.html" id="cart-link">Cart (0)</a></li>
-          </span>
+        <!-- DONOR NAV -->
+        <li id="nav-donor" class="nav-item d-none">
+          <a class="nav-link active" href="donate.html">Donate</a>
+        </li>
 
-          <!-- ADMIN ONLY -->
-          <span id="nav-admin" class="d-none">
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard.html">Dashboard</a>
-            </li>
-          </span>
+        <li id="nav-donor-dashboard" class="nav-item d-none">
+          <a class="nav-link" href="/donor-dashboard.html">My Dashboard</a>
+        </li>
 
-        </ul>
+        <!-- CHARITY -->
+        <span id="nav-charity" class="d-none">
+          <li class="nav-item"><a class="nav-link" href="/Charity/stock.html">Stock</a></li>
+          <li class="nav-item"><a class="nav-link" id="cart-link" href="/Charity/cart.html">Cart (0)</a></li>
+        </span>
 
-        <!-- Auth controls -->
-        <div class="d-flex align-items-center gap-3 ms-3">
-          <!-- Logged OUT -->
-          <button id="loginBtn" class="google-btn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
-            Sign in with Google
+        <!-- ADMIN -->
+        <span id="nav-admin" class="d-none">
+          <li class="nav-item"><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+        </span>
+
+        <!-- Always visible -->
+        <li class="nav-item"><a class="nav-link" href="/aboutpage.html">About Us</a></li>
+
+      </ul>
+
+      <!-- AUTH SECTION -->
+      <div class="d-flex align-items-center gap-3 ms-3">
+
+        <!-- Logged OUT -->
+        <button id="loginBtn" class="google-btn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+          Sign in with Google
+        </button>
+
+        <!-- Logged IN -->
+        <div id="userMenu" class="dropdown d-none">
+          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2"
+                  data-bs-toggle="dropdown">
+            <img id="userAvatar" class="avatar" alt="User Avatar">
+            <span id="userName" class="d-none d-sm-inline small"></span>
           </button>
-
-          <!-- Logged IN -->
-          <div id="userMenu" class="dropdown d-none">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2"
-                    data-bs-toggle="dropdown">
-              <img id="userAvatar" class="avatar" alt="User Avatar">
-              <span id="userName" class="d-none d-sm-inline small"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main>
-    <section class="donate-section py-5">
-      <div class="container">
-        <div class="text-center mb-5">
-          <h1 class="fw-bold display-6">Donate Clothes</h1>
-          <p class="text-muted lead">Submit your clothing donations to support local communities.</p>
-        </div>
-
-        <div class="row justify-content-center">
-          <div class="col-md-9 col-lg-7">
-
-            <form id="donationForm" class="shadow-sm p-4 rounded bg-light needs-validation" novalidate>
-
-              <h5 class="fw-bold mb-3">Donation items</h5>
-
-              <!-- Items container -->
-              <div id="itemsContainer">
-
-                <!-- FIRST donation item -->
-                <div class="donation-item border rounded p-3 mb-3 bg-white position-relative">
-
-                  <button type="button"
-                          class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle remove-item-btn"
-                          style="width: 28px; height: 28px; padding: 0;">
-                    <i class="bi bi-x-lg"></i>
-                  </button>
-
-                  <div class="mb-3">
-                    <label class="form-label fw-semibold">
-                      Item Name <span class="text-danger">*</span>
-                    </label>
-                    <input type="text" class="form-control itemName" placeholder="e.g. Winter Jacket" required>
-                    <div class="invalid-feedback">Please enter the item name.</div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label fw-semibold">
-                      Category <span class="text-danger">*</span>
-                    </label>
-                    <select class="form-select itemCategory" required>
-                      <option value="">Select category</option>
-                      <option value="men">Men</option>
-                      <option value="women">Women</option>
-                      <option value="children">Children</option>
-                      <option value="other">Other</option>
-                    </select>
-                    <div class="invalid-feedback">Please choose a category.</div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label fw-semibold">
-                      Condition <span class="text-danger">*</span>
-                    </label>
-                    <select class="form-select itemCondition" required>
-                      <option value="">Select condition</option>
-                      <option value="new">New</option>
-                      <option value="good">Good</option>
-                      <option value="used">Used</option>
-                    </select>
-                    <div class="invalid-feedback">Please select the condition.</div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label fw-semibold">Description</label>
-                    <textarea class="form-control itemDescription" rows="2"
-                              placeholder="Additional details (optional)"></textarea>
-                  </div>
-
-                </div>
-
-              </div>
-
-              <!-- ADD ITEM BUTTON -->
-              <button type="button" id="addItemBtn" class="btn btn-outline-primary w-100 mb-4">
-                <i class="bi bi-plus-lg"></i> Add another item
-              </button>
-
-              <h5 class="fw-bold mb-3 mt-4">Pickup details</h5>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">
-                  Pickup Address <span class="text-danger">*</span>
-                </label>
-                <textarea id="pickupAddress" class="form-control" rows="2"
-                          placeholder="House number, street, city, postcode" required></textarea>
-                <div class="invalid-feedback">Please enter the pickup address.</div>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">
-                  Preferred Pickup Date <span class="text-danger">*</span>
-                </label>
-                <input id="pickupDate" type="date" class="form-control" required>
-                <div class="invalid-feedback">Please choose a pickup date.</div>
-              </div>
-
-              <div class="mb-4">
-                <label class="form-label fw-semibold">
-                  Preferred Pickup Time <span class="text-danger">*</span>
-                </label>
-                <input id="pickupTime" type="time" class="form-control" required>
-                <div class="invalid-feedback">Please choose a pickup time.</div>
-              </div>
-
-              <button type="submit" class="btn btn-primary w-100">Submit Donation</button>
-
-            </form>
-
-          </div>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <h5 class="fw-bold mb-3">SustainWear</h5>
-          <p class="small text-secondary">Giving clothes a second life — built by students.</p>
-        </div>
-
-        <div class="col-md-4">
-          <h6 class="fw-bold mb-3 text-uppercase">Quick Links</h6>
-          <ul class="list-unstyled small">
-
-            <!-- Always visible -->
-            <li><a href="/">Home</a></li>
-            <li><a href="aboutpage.html">About Us</a></li>
-
-            <!-- Guests + donors -->
-            <span id="footer-donor" class="d-none">
-              <li><a href="donate.html">Donate</a></li>
-            </span>
-
-            <!-- CHARITY ONLY -->
-            <span id="footer-charity" class="d-none">
-              <li><a href="/Charity/stock.html">Stock</a></li>
-              <li><a href="/Charity/cart.html">Cart</a></li>
-            </span>
-
-            <!-- ADMIN ONLY -->
-            <span id="footer-admin" class="d-none">
-              <li><a href="/dashboard.html">Dashboard</a></li>
-            </span>
-
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
           </ul>
         </div>
 
-        <div class="col-md-4">
-          <h6 class="fw-bold mb-3 text-uppercase">Connect</h6>
-          <div class="d-flex gap-3 fs-5">
-            <a href="#"><i class="bi bi-github"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
-          </div>
-          <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+  <section class="donate-section py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h1 class="fw-bold display-6">Donate Clothes</h1>
+        <p class="text-muted lead">Submit your clothing donations to support local communities.</p>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-7">
+
+          <form id="donationForm" class="shadow-sm p-4 rounded bg-light needs-validation" novalidate>
+
+            <!-- Donation Items -->
+            <h5 class="fw-bold mb-3">Donation Items</h5>
+
+            <div id="itemsContainer">
+              <!-- Initial Item -->
+              <div class="donation-item border rounded p-3 mb-3 bg-white position-relative">
+                <button type="button"
+                  class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle remove-item-btn"
+                  style="width: 28px; height: 28px; padding: 0;">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Item Name *</label>
+                  <input type="text" class="form-control itemName" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Category *</label>
+                  <select class="form-select itemCategory" required>
+                    <option value="">Select category</option>
+                    <option value="men">Men</option>
+                    <option value="women">Women</option>
+                    <option value="children">Children</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Condition *</label>
+                  <select class="form-select itemCondition" required>
+                    <option value="">Select condition</option>
+                    <option value="new">New</option>
+                    <option value="good">Good</option>
+                    <option value="used">Used</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Description</label>
+                  <textarea class="form-control itemDescription" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Item -->
+            <button type="button" id="addItemBtn" class="btn btn-outline-primary w-100 mb-4">
+              <i class="bi bi-plus-lg"></i> Add another item
+            </button>
+
+            <!-- Pickup Details -->
+            <h5 class="fw-bold mb-3 mt-4">Your & Pickup Details</h5>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Your Name</label>
+              <input type="text" id="donorName" class="form-control">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Phone Number</label>
+              <input type="text" id="donorPhone" class="form-control">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email Address</label>
+              <input type="email" id="donorEmail" class="form-control">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Pickup Address *</label>
+              <textarea id="pickupAddress" class="form-control" rows="2" required></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Pickup Date *</label>
+              <input id="pickupDate" type="date" class="form-control" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Pickup Time *</label>
+              <input id="pickupTime" type="time" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Submit Donation</button>
+
+          </form>
+
         </div>
       </div>
 
-      <hr class="border-secondary my-4">
-      <div class="text-center footer-note">© 2025 SustainWear — Built with Firebase & teamwork.</div>
     </div>
-  </footer>
+  </section>
+</main>
 
-  <!-- Firebase -->
-  <script type="module" src="js/app.js?v=4"></script>
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <hr class="border-secondary my-4">
+    <div class="text-center footer-note">© 2025 SustainWear — Built with Firebase & teamwork.</div>
+  </div>
+</footer>
 
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    emailjs.init("lK_MWGQyrsHUBZY0Z");
-  </script>
+<!-- ========== EmailJS (FIX ADDED HERE) ========== -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("lK_MWGQyrsHUBZY0Z");
+</script>
 
-  <!-- Donation Handler -->
-  <script type="module" src="js/donation.js?v=4"></script>
+<!-- Firebase -->
+<script type="module" src="js/app.js?v=10"></script>
 
-  <!-- Role-based nav + footer -->
-  <script type="module">
-    import { getAuth, onAuthStateChanged }
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc }
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+<!-- Donation logic -->
+<script type="module" src="js/donation.js?v=10"></script>
 
-    const auth = getAuth();
-    const db = getFirestore();
+<!-- ROLE LOGIC -->
+<script type="module">
+  import { getAuth, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc }
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    const navDonor = document.getElementById("nav-donor");
-    const navCharity = document.getElementById("nav-charity");
-    const navAdmin = document.getElementById("nav-admin");
+  const auth = getAuth();
+  const db = getFirestore();
 
-    const footerDonor = document.getElementById("footer-donor");
-    const footerCharity = document.getElementById("footer-charity");
-    const footerAdmin = document.getElementById("footer-admin");
+  const donorNav = document.getElementById("nav-donor");
+  const donorDashboard = document.getElementById("nav-donor-dashboard");
+  const charityNav = document.getElementById("nav-charity");
+  const adminNav = document.getElementById("nav-admin");
 
-    [navDonor, navCharity, navAdmin, footerDonor, footerCharity, footerAdmin]
-      .forEach(el => el?.classList.add("d-none"));
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
 
-    onAuthStateChanged(auth, async (user) => {
-      let role = null;
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const role = snap.exists() ? snap.data().role : "DONOR";
 
-      if (user) {
-        try {
-          const snap = await getDoc(doc(db, "users", user.uid));
-          if (snap.exists()) {
-            role = snap.data().role;
-          }
-        } catch (err) {
-          console.error("Error reading user role:", err);
-        }
-      }
+    if (role === "DONOR") {
+      donorNav.classList.remove("d-none");
+      donorDashboard.classList.remove("d-none");
+    }
 
-      if (!role || role === "DONOR") {
-        navDonor?.classList.remove("d-none");
-        footerDonor?.classList.remove("d-none");
-      }
+    if (role === "CHARITY") charityNav.classList.remove("d-none");
+    if (role === "ADMIN") adminNav.classList.remove("d-none");
+  });
+</script>
 
-      if (role === "CHARITY") {
-        navCharity?.classList.remove("d-none");
-        footerCharity?.classList.remove("d-none");
-      }
-
-      if (role === "ADMIN") {
-        navAdmin?.classList.remove("d-none");
-        footerAdmin?.classList.remove("d-none");
-      }
-    });
-  </script>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Bootstrap validation helper -->
-  <script>
-  (() => {
-    'use strict';
-    const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
-    });
-  })();
-  </script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

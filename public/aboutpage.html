@@ -35,31 +35,38 @@
       <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
         <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
 
-          <!-- Always visible -->
+          <!-- Always -->
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="aboutpage.html">About Us</a></li>
 
-          <!-- Guests + donors -->
-          <span id="nav-donor" class="d-none">
-            <li class="nav-item"><a class="nav-link" href="donate.html">Donate</a></li>
-          </span>
+          <!-- Donor -->
+          <li id="nav-donor" class="nav-item d-none">
+            <a class="nav-link" href="/donate.html">Donate</a>
+          </li>
 
-          <!-- Charity only -->
+          <li id="nav-donor-dashboard" class="nav-item d-none">
+            <a class="nav-link" href="/donor-dashboard.html">My Dashboard</a>
+          </li>
+
+          <!-- Charity -->
           <span id="nav-charity" class="d-none">
             <li class="nav-item"><a class="nav-link" href="/Charity/stock.html">Stock</a></li>
-            <li class="nav-item"><a class="nav-link" href="/Charity/cart.html" id="cart-link">Cart (0)</a></li>
+            <li class="nav-item"><a class="nav-link" id="cart-link" href="/Charity/cart.html">Cart (0)</a></li>
           </span>
 
-          <!-- Admin only -->
+          <!-- Admin -->
           <span id="nav-admin" class="d-none">
-            <li class="nav-item">
-              <a id="dashboardLink" class="nav-link" href="/dashboard.html">Dashboard</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
           </span>
+
+          <!-- Always -->
+          <li class="nav-item">
+            <a class="nav-link active" href="aboutpage.html">About Us</a>
+          </li>
 
         </ul>
 
         <div class="d-flex align-items-center gap-3 ms-3">
+
           <!-- Signed OUT -->
           <button id="loginBtn" class="google-btn d-none">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
@@ -145,7 +152,7 @@
 
       <div class="row g-4">
         <div class="col-md-4">
-          <h5 class="fw-bold mb-3">SustainWear</h5>
+          <h5 class="fw-bold mb-3">SustainWear</hh5>
           <p class="small text-secondary">
             Giving clothes a second life — built to promote sustainable fashion and community support.
           </p>
@@ -153,29 +160,7 @@
 
         <div class="col-md-4">
           <h6 class="fw-bold mb-3 text-uppercase">Quick Links</h6>
-          <ul class="list-unstyled small">
-
-            <!-- Always visible -->
-            <li><a href="/">Home</a></li>
-            <li><a href="aboutpage.html">About Us</a></li>
-
-            <!-- Guests + donors -->
-            <span id="footer-donor" class="d-none">
-              <li><a href="donate.html">Donate</a></li>
-            </span>
-
-            <!-- Charity only -->
-            <span id="footer-charity" class="d-none">
-              <li><a href="/Charity/stock.html">Stock</a></li>
-              <li><a href="/Charity/cart.html">Cart</a></li>
-            </span>
-
-            <!-- Admin only -->
-            <span id="footer-admin" class="d-none">
-              <li><a href="/dashboard.html">Dashboard</a></li>
-            </span>
-
-          </ul>
+          <ul class="list-unstyled small" id="footer-links"></ul>
         </div>
 
         <div class="col-md-4">
@@ -226,44 +211,57 @@
     const db = getFirestore();
 
     const navDonor = document.getElementById("nav-donor");
+    const navDonorDashboard = document.getElementById("nav-donor-dashboard");
     const navCharity = document.getElementById("nav-charity");
     const navAdmin = document.getElementById("nav-admin");
 
-    const footerDonor = document.getElementById("footer-donor");
-    const footerCharity = document.getElementById("footer-charity");
-    const footerAdmin = document.getElementById("footer-admin");
+    const footerLinks = document.getElementById("footer-links");
 
-    [navDonor, navCharity, navAdmin, footerDonor, footerCharity, footerAdmin]
-      .forEach(el => el?.classList.add("d-none"));
+    function setupFooter(role) {
+      footerLinks.innerHTML = `
+        <li><a href="/">Home</a></li>
+        <li><a href="/aboutpage.html">About Us</a></li>
+      `;
 
-    onAuthStateChanged(auth, async (user) => {
-      let role = null;
-
-      if (user) {
-        try {
-          const snap = await getDoc(doc(db, "users", user.uid));
-          if (snap.exists()) {
-            role = snap.data().role;
-          }
-        } catch (err) {
-          console.error("Error reading user role:", err);
-        }
-      }
-
-      if (!role || role === "DONOR") {
-        navDonor?.classList.remove("d-none");
-        footerDonor?.classList.remove("d-none");
+      if (role === "DONOR") {
+        footerLinks.innerHTML += `
+          <li><a href="/donate.html">Donate</a></li>
+          <li><a href="/donor-dashboard.html">My Dashboard</a></li>
+        `;
       }
 
       if (role === "CHARITY") {
-        navCharity?.classList.remove("d-none");
-        footerCharity?.classList.remove("d-none");
+        footerLinks.innerHTML += `
+          <li><a href="/Charity/stock.html">Stock</a></li>
+          <li><a href="/Charity/cart.html">Cart</a></li>
+        `;
       }
 
       if (role === "ADMIN") {
-        navAdmin?.classList.remove("d-none");
-        footerAdmin?.classList.remove("d-none");
+        footerLinks.innerHTML += `
+          <li><a href="/Admin/dashboard.html">Dashboard</a></li>
+        `;
       }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setupFooter("GUEST");
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const role = snap.exists() ? snap.data().role : "DONOR";
+
+      if (role === "DONOR") {
+        navDonor.classList.remove("d-none");
+        navDonorDashboard.classList.remove("d-none");
+      }
+
+      if (role === "CHARITY") navCharity.classList.remove("d-none");
+      if (role === "ADMIN") navAdmin.classList.remove("d-none");
+
+      setupFooter(role);
     });
   </script>
 
