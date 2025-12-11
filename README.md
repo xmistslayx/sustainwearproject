@@ -1,190 +1,148 @@
-SustainWear Project – Setup & Installation Guide
+SustainWear – Project README
 
-This document explains how to get the SustainWear web app running on your local machine.
-It includes Firebase setup, emulator usage, and dependencies required for testing and development.
+This document provides an overview of the SustainWear application, its purpose, how it is structured, and how it can be run for assessment purposes. It also outlines the major features delivered as part of the project.
 
-1. Prerequisites
+1. Project Overview
 
-Before starting, make sure you have the following installed:
+SustainWear is a web-based platform designed to support sustainable clothing donation and redistribution. The system enables donors to submit clothing donations, charities to request stock, and administrators to oversee operations and approve requests.
 
-1. Node.js (v18 or newer)
+The platform promotes circular fashion by connecting donors with local charities and tracking the environmental impact of donations.
 
-Download: https://nodejs.org/
+2. Features Implemented
+Donor Features
 
-Verify installation:
+Submit donations containing multiple clothing items.
 
-node -v
-npm -v
+Enter and update personal and pickup information.
 
+Automatically calculate CO₂ saved based on donated item categories.
 
-2. Firebase CLI (firebase-tools)
+Access a personal dashboard showing:
 
-Install globally via npm:
+Total donations
+
+Total items donated
+
+CO₂ saved
+
+Donation history with detailed modal view
+
+Automatic pre-fill of donor details from stored Firestore data.
+
+Charity Features
+
+View available stock generated from completed donations.
+
+Add items to a cart and submit stock requests.
+
+Requests stored in Firestore, including requested items and submission dates.
+
+Admin Features
+
+Review all donations, including donor details and item information.
+
+Approve or reject charity requests.
+
+Update donation pickup statuses (pending, scheduled, completed, cancelled).
+
+Dashboard includes:
+
+Category-based donation chart
+
+Pickup status chart
+
+Summary metrics (donations, pickups, CO₂ totals)
+
+Role-Based Navigation
+
+Dynamic navigation showing only the pages relevant to the user’s role (Donor, Charity, Admin).
+
+Roles determined by Firestore user records.
+
+3. Technologies Used
+
+HTML, CSS, JavaScript
+
+Bootstrap 5
+
+Firebase Authentication
+
+Firestore Database
+
+Firebase Hosting
+
+Firebase Emulator Suite
+
+EmailJS for donor confirmations
+
+Chart.js for dashboard analytics
+
+No traditional backend server is required due to Firebase's client-side SDK powering the application logic.
+
+4. Running the Application (Local or Hosted)
+Hosted Version
+
+A live version is deployed and used for assessment.
+
+Running Locally with Firebase Emulator
+
+Install Firebase CLI:
 
 npm install -g firebase-tools
 
 
-Verify installation:
-
-firebase --version
-
-
-3. Git (for version control)
-
-Download: https://git-scm.com/downloads
-
-Verify installation:
-
-git --version
-
-
-4. Java (JDK 21+) – required for Firebase emulators
-
-Download: https://adoptium.net/
-
-Verify installation:
-
-java -version
-
-2. Clone the Project
-
-If using GitHub:
-
-git clone <repository_url>
-cd sustainwear
-
-
-If shared as a .zip file:
-
-Extract the contents.
-
-Open the folder in VS Code or your preferred IDE.
-
-3. Install Dependencies
-
-Run this command:
-
-npm install
-
-
-If there’s no package.json, skip this step (Firebase tools handle hosting).
-
-4. Firebase Setup
-
-Each member needs to set up Firebase locally.
-
-1. Log in to Firebase:
+Login:
 
 firebase login
 
 
-2. Initialize Firebase (only needed once per new environment):
-
-firebase init
-
-
-Select:
-
-Hosting
-
-Firestore
-
-Auth
-
-Storage
-
-Then choose “Use existing project” and select sustainwear-11b25.
-
-Do not overwrite existing files like firebase.json, .firebaserc, or firestore.rules.
-
-5. Folder Structure Overview
-
-Ensure your folder structure looks like this:
-
-sustainwear/
-├── firebase.json
-├── firestore.rules
-├── firestore.indexes.json
-├── .firebaserc
-├── .gitignore
-│
-├── public/
-│   ├── index.html
-│   ├── donate.html
-│   ├── style.css
-│   ├── 404.html
-│   ├── js/
-│   │   ├── app.js
-│   │   └── firebaseConfig.js
-│
-└── storage.rules
-
-6. Firebase Configuration
-
-The file firebaseConfig.js (inside /public/js/) contains:
-
-export const firebaseConfig = {
-  apiKey: "AIzaSyA6TqRHrs25U1_CcgeN-H4u33vRvUs8lsk",
-  authDomain: "sustainwear-11b25.firebaseapp.com",
-  projectId: "sustainwear-11b25",
-  storageBucket: "sustainwear-11b25.appspot.com",
-  messagingSenderId: "896353325055",
-  appId: "1:896353325055:web:1e13edb9fa1e079d2521ca",
-  measurementId: "G-NEJG7JR2D0"
-};
-
-
-No extra setup is required — just ensure this file is in /public/js/.
-
-7. Running the Project Locally
-
-To start the Firebase emulators:
+Start the emulator:
 
 firebase emulators:start
 
 
-If ports are already in use:
-
-firebase emulators:start --only hosting --port=5001
-
-
-Then open your browser to:
+Access the app:
 
 http://localhost:5000
 
+5. Deployment Instructions
 
-You should see the SustainWear home page and be able to sign in with Google (using local emulators).
-
-8. Deploying to Firebase Hosting (Optional)
-
-When ready to deploy:
+To publish updates to Firebase Hosting:
 
 firebase deploy
 
 
-This will publish the website to:
+The site is then available at the assigned Firebase Hosting URL.
 
-https://sustainwear-11b25.web.app
+6. Testing Overview (Summary)
 
-9. Common Issues
-Issue	Solution
-Cannot access 'app' before initialization	Ensure initializeApp() is placed before any console logs.
-CSS not loading	Confirm <link rel="stylesheet" href="style.css"> is the last link in the <head>.
-Footer appears white	Press Ctrl + F5 (Windows) or Cmd + Shift + R (Mac) to hard-refresh the CSS.
-Emulator fails to start	Try firebase emulators:start --only hosting.
-Java version warning	Install JDK 21+ to avoid future compatibility issues.
-10. Collaboration Notes
+Testing completed includes:
 
-Do not push .env or sensitive data (these are ignored via .gitignore).
+Manual functional testing of all user flows (donor, charity, admin)
 
-Always pull the latest version before committing new changes:
+Non-functional performance testing (DevTools network timings)
 
-git pull
-git add .
-git commit -m "Updated feature"
-git push
+Accessibility testing using Axe DevTools
+
+Integration testing with Firebase Emulator Suite
+
+A separate testing document contains detailed test cases, outcomes, screenshots, and defect logs.
+
+7. Defect Log
+
+A defect report is provided in the repository at:
+
+/testing/defect-log.xlsx
 
 
-Only one group member needs to manage Firebase hosting deployment.
+It includes issue descriptions, severity, steps to reproduce, and resolutions.
 
-Keep commits clear and consistent (e.g., “Added donation form layout”).
+8. Notes for Assessors
+
+All main user stories were implemented.
+
+Authentication and database interactions rely entirely on Firebase.
+
+CO₂ calculations follow a simplified category-based model for clarity.
+
+The originally planned AI feature was researched but not implemented to maintain project scope and stability.
