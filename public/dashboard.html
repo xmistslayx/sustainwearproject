@@ -25,9 +25,7 @@
 
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-      <!-- NAV MENU -->
       <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
-
         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
 
         <!-- ADMIN ONLY -->
@@ -36,18 +34,11 @@
         </li>
 
         <li class="nav-item"><a class="nav-link" href="aboutpage.html">About Us</a></li>
-
       </ul>
 
-      <!-- AUTH MENU -->
       <div class="d-flex align-items-center">
+        <a id="loginBtn" href="/login.html" class="btn btn-outline-primary px-3 py-1">Login / Register</a>
 
-        <!-- LOGGED OUT -->
-        <a id="loginBtn" href="/login.html" class="btn btn-outline-primary px-3 py-1">
-          Login / Register
-        </a>
-
-        <!-- LOGGED IN -->
         <div id="userMenu" class="dropdown d-none">
           <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2"
                   data-bs-toggle="dropdown">
@@ -58,7 +49,6 @@
             <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
           </ul>
         </div>
-
       </div>
 
     </div>
@@ -72,8 +62,8 @@
 
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
       <div>
-        <h1 class="h3 fw-bold mb-1">Admin dashboard</h1>
-        <p class="text-muted mb-0 small">Overview of clothing donations and pickup activity.</p>
+        <h1 class="h3 fw-bold mb-1">Admin Dashboard</h1>
+        <p class="text-muted mb-0 small">Overview of donations, pickups & charity stock requests.</p>
       </div>
       <span class="badge bg-dark-subtle text-dark small">Admin only</span>
     </div>
@@ -137,16 +127,44 @@
         </div>
       </div>
 
+      <!-- CO₂ SAVED -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Total CO₂ saved</p>
+              <h4 class="fw-bold mb-0" id="adminTotalCo2">0 kg</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-globe2 fs-5 text-success"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- REQUESTS MODULE -->
+    <!-- CHARITY STOCK REQUESTS TABLE -->
     <div class="card shadow-sm border-0 mb-4">
-      <div class="card-body d-flex justify-content-between align-items-center">
-        <div>
-          <h6 class="fw-bold mb-1">Manage Charity Requests</h6>
-          <p class="small text-muted mb-0">Review, approve, and track charity stock requests.</p>
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">Charity Stock Requests</h6>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Charity Name</th>
+                <th>Requested Items</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="charityRequestsTableBody">
+              <tr><td colspan="5" class="text-center text-muted py-4">Loading requests…</td></tr>
+            </tbody>
+          </table>
         </div>
-        <a href="#charity-requests" class="btn btn-primary btn-sm">View Requests</a>
       </div>
     </div>
 
@@ -158,7 +176,7 @@
           <div class="card-body">
             <h6 class="fw-bold mb-3">Donations per category</h6>
             <canvas id="categoryChart" height="200"></canvas>
-            <p class="small text-muted mt-2 mb-0">Shows how many donations are coming from each clothing category.</p>
+            <p class="small text-muted mt-2 mb-0">Items donated by category.</p>
           </div>
         </div>
       </div>
@@ -166,9 +184,9 @@
       <div class="col-lg-6">
         <div class="card shadow-sm border-0 h-100">
           <div class="card-body">
-            <h6 class="fw-bold mb-3">Pickup status breakdown</h6>
+            <h6 class="fw-bold mb-3">Pickup Status Breakdown</h6>
             <canvas id="statusChart" height="200"></canvas>
-            <p class="small text-muted mt-2 mb-0">Overview of pending, scheduled, completed, and cancelled pickups.</p>
+            <p class="small text-muted mt-2 mb-0">Pending, Scheduled, Completed and Cancelled pickups.</p>
           </div>
         </div>
       </div>
@@ -176,10 +194,10 @@
     </div>
 
     <!-- DONATION TABLE -->
-    <div class="card shadow-sm border-0" id="charity-requests">
+    <div class="card shadow-sm border-0">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold mb-0">All donations</h6>
+          <h6 class="fw-bold mb-0">All Donations</h6>
           <span class="small text-muted" id="donationCountLabel">0 records</span>
         </div>
 
@@ -192,7 +210,7 @@
                 <th>Category</th>
                 <th>Condition</th>
                 <th>Pickup date</th>
-                <th>Status</th>
+                <th>Update Status</th>
               </tr>
             </thead>
             <tbody id="donationsTableBody">
@@ -203,9 +221,6 @@
           </table>
         </div>
 
-        <p class="small text-muted mb-0">
-          Only admins can view and update donation records. Donors can only see their own submissions.
-        </p>
       </div>
     </div>
 
@@ -221,8 +236,7 @@
       <div class="col-md-4">
         <h5 class="fw-bold mb-3">SustainWear</h5>
         <p class="small text-secondary">
-          Giving clothes a second life — built by students to promote
-          sustainable fashion and community support.
+          Giving clothes a second life — promoting sustainable fashion.
         </p>
       </div>
 
@@ -238,7 +252,6 @@
           <a href="#"><i class="bi bi-twitter"></i></a>
           <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
         </div>
-        <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
       </div>
 
     </div>
@@ -246,22 +259,18 @@
     <hr class="border-secondary my-4">
 
     <div class="text-center small text-secondary">
-      © 2025 SustainWear — Built with Firebase, Bootstrap, and teamwork.
+      © 2025 SustainWear — Built by SHU Students.
     </div>
   </div>
 </footer>
 
-
-<!-- ================= GLOBAL AUTH ================= -->
+<!-- GLOBAL AUTH -->
 <script type="module" src="js/app.js"></script>
 
-<!-- ================= ROLE-BASED NAV / ADMIN CHECK ================= -->
+<!-- ROLE CHECK -->
 <script type="module">
-  import { getAuth, onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc }
-
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
   const auth = getAuth();
   const db = getFirestore();
@@ -274,7 +283,6 @@
       <li><a href="/">Home</a></li>
       <li><a href="aboutpage.html">About Us</a></li>
     `;
-
     if (role === "ADMIN") {
       footerLinks.innerHTML += `<li><a href="dashboard.html">Dashboard</a></li>`;
     }
@@ -300,7 +308,7 @@
   });
 </script>
 
-<!-- ================= CHARTS + DASHBOARD LOGIC ================= -->
+<!-- CHARTS + DASHBOARD LOGIC -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="js/dashboard.js"></script>
 

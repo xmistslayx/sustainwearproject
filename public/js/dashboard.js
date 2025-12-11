@@ -1,405 +1,292 @@
-
-import { firebaseConfig } from "./firebaseConfig.js";
-import {
-  initializeApp,
-  getApps,
-  getApp
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-
 import {
   getFirestore,
   collection,
   getDocs,
-  doc,
-  getDoc,
-  updateDoc
+  updateDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-import {
-  getAuth,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-// Ensure we don't re-initialise Firebase
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+const auth = getAuth();
+const db = getFirestore();
 
-// DOM references
-const totalDonationsEl   = document.getElementById("totalDonations");
-const pendingPickupsEl   = document.getElementById("pendingPickups");
+/* DOM references */
+const totalDonationsEl = document.getElementById("totalDonations");
+const pendingPickupsEl = document.getElementById("pendingPickups");
 const completedPickupsEl = document.getElementById("completedPickups");
-const donationCountLabel = document.getElementById("donationCountLabel");
-const donationsTableBody = document.getElementById("donationsTableBody");
+const charityRequestsCountEl = document.getElementById("charityRequestsCount");
+const adminTotalCo2El = document.getElementById("adminTotalCo2");
 
-let categoryChartInstance = null;
-let statusChartInstance   = null;
+const donationCountLabelEl = document.getElementById("donationCountLabel");
+const donationsTableBodyEl = document.getElementById("donationsTableBody");
 
-// Utility: format timestamp / date strings nicely
-function formatDate(dateValue) {
-  if (!dateValue) return "—";
-  try {
-    const d = new Date(dateValue);
-    if (!isNaN(d.getTime())) {
-      return d.toLocaleDateString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      });
-    }
-    return dateValue;
-  } catch {
-    return dateValue;
-  }
-}
+const charityRequestsTableBody = document.getElementById("charityRequestsTableBody");
 
-//  ADMIN CHECK + DATA LOAD
+const categoryChartCanvas = document.getElementById("categoryChart");
+const statusChartCanvas = document.getElementById("statusChart");
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    alert("You need to be signed in as an admin to access the dashboard.");
-    window.location.href = "/";
-    return;
-  }
-
-  try {
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-
-    if (!snap.exists() || snap.data().role !== "ADMIN") {
-      alert("You do not have permission to view this page.");
-      window.location.href = "/";
-      return;
-    }
-
-  
-    await loadDashboardData();
-
-  } catch (err) {
-    console.error("Error checking admin role:", err);
-    alert("Could not verify admin access.");
-    window.location.href = "/";
-  }
-});
-
-//  LOAD DASHBOARD DATA
-
-async function loadDashboardData() {
-  try {
-    const donationsSnap = await getDocs(collection(db, "donations"));
-    const donations = donationsSnap.docs.map(docSnap => ({
-      id: docSnap.id,
-      ...docSnap.data()
-    }));
-
-    // Update summary cards
-    updateSummaryCards(donations);
-    // Update charts
-    updateCharts(donations);
-    // Populate table
-    populateDonationsTable(donations);
-
-  } catch (err) {
-    console.error("Error loading donations:", err);
-    donationsTableBody.innerHTML = `
-      <tr>
-        <td colspan="6" class="text-center text-danger py-4">
-          Failed to load donations (check Firestore rules or connection).
-        </td>
-      </tr>
-    `;
-  }
-}
-
-//  SUMMARY CARDS
-
-function updateSummaryCards(donations) {
-  const total = donations.length;
-
-  let pending   = 0;
-  let completed = 0;
-
-  donations.forEach(d => {
-    const status = (d.pickupStatus || "").toLowerCase();
-    if (status === "completed") {
-      completed++;
-    } else if (status === "pending" || status === "scheduled") {
-      pending++;
-    }
+/* ---------------- UTILS ---------------- */
+function formatDate(millis) {
+  if (!millis) return "N/A";
+  const d = new Date(millis);
+  return d.toLocaleDateString("en-UK", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   });
+}
 
-  if (totalDonationsEl)   totalDonationsEl.textContent   = total;
-  if (pendingPickupsEl)   pendingPickupsEl.textContent   = pending;
-  if (completedPickupsEl) completedPickupsEl.textContent = completed;
+function buildPickupLabel(data) {
+  const date = data.pickupDate || "";
+  const time = data.pickupTime || "";
+  if (!date && !time) return "N/A";
+  return `${date} ${time}`.trim();
+}
 
-  if (donationCountLabel) {
-    donationCountLabel.textContent = `${total} record${total === 1 ? "" : "s"}`;
+/* ============================================================
+   UPDATE DONATION STATUS
+============================================================ */
+async function updateDonationStatus(id, newStatus) {
+  try {
+    const ref = doc(db, "donations", id);
+
+    await updateDoc(ref, {
+      pickupStatus: newStatus
+    });
+
+    // Reload dashboard
+    initDashboard();
+  } catch (err) {
+    console.error("Status update failed:", err);
+    alert("Failed to update donation status.");
   }
 }
 
-//  CHARTS
+/* ============================================================
+   LOAD DONATIONS
+============================================================ */
+async function loadDonations() {
+  const snap = await getDocs(collection(db, "donations"));
 
-function updateCharts(donations) {
-  // Category counts (now using items[] if present)
-  const categories = ["men", "women", "children", "other"];
-  const categoryCounts = {
-    men: 0,
-    women: 0,
-    children: 0,
-    other: 0
-  };
+  if (snap.empty) {
+    donationsTableBodyEl.innerHTML = `
+      <tr><td colspan="6" class="text-center text-muted py-4">No donations found.</td></tr>
+    `;
+    return {
+      total: 0, pending: 0, completed: 0,
+      categoryCounts: { men: 0, women: 0, children: 0, other: 0 },
+      statusCounts: { pending: 0, scheduled: 0, completed: 0, cancelled: 0 },
+      co2Total: 0,
+    };
+  }
 
-  donations.forEach(d => {
-    let items = [];
-    if (Array.isArray(d.items) && d.items.length) {
-      items = d.items;
-    } else if (d.itemCategory) {
-      items = [{ itemCategory: d.itemCategory }];
+  let total = 0;
+  let pending = 0;
+  let completed = 0;
+  let co2Total = 0;
+
+  const categoryCounts = { men: 0, women: 0, children: 0, other: 0 };
+  const statusCounts = { pending: 0, scheduled: 0, completed: 0, cancelled: 0 };
+
+  const rows = [];
+
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    const id = docSnap.id;
+
+    total++;
+
+    const status = (d.pickupStatus || "pending").toLowerCase();
+
+    if (status === "pending") pending++;
+    if (status === "completed") completed++;
+
+    if (statusCounts[status] !== undefined) {
+      statusCounts[status]++;
     }
+
+    const items = Array.isArray(d.items) ? d.items : [];
 
     items.forEach(item => {
-      const cat = (item.itemCategory || "").toLowerCase();
-      if (categories.includes(cat)) {
-        categoryCounts[cat]++;
-      } else {
-        categoryCounts.other++;
-      }
+      const cat = (item.itemCategory || "other").toLowerCase();
+      if (categoryCounts[cat] !== undefined) categoryCounts[cat]++;
+      else categoryCounts.other++;
     });
+
+    co2Total += Number(d.co2_total || 0);
+
+    const first = items[0] || {};
+
+    /* ========== Status Dropdown UI ========== */
+    const statusDropdown = `
+      <select class="form-select form-select-sm"
+              data-donation-status="${id}">
+        <option value="pending"   ${status === "pending" ? "selected" : ""}>Pending</option>
+        <option value="scheduled" ${status === "scheduled" ? "selected" : ""}>Scheduled</option>
+        <option value="completed" ${status === "completed" ? "selected" : ""}>Completed</option>
+        <option value="cancelled" ${status === "cancelled" ? "selected" : ""}>Cancelled</option>
+      </select>
+    `;
+
+    rows.push(`
+      <tr>
+        <td>${first.itemName || "Multiple items"}</td>
+        <td>${d.name || "Unknown"}</td>
+        <td>${first.itemCategory || "—"}</td>
+        <td>${first.itemCondition || "—"}</td>
+        <td>${buildPickupLabel(d)}</td>
+        <td>${statusDropdown}</td>
+      </tr>
+    `);
   });
 
-  const categoryData = categories.map(c => categoryCounts[c]);
+  donationsTableBodyEl.innerHTML = rows.join("");
 
-  // Status counts
-  const statusLabels = ["Pending", "Scheduled", "Completed", "Cancelled"];
-  const statusCounts = {
-    pending: 0,
-    scheduled: 0,
-    completed: 0,
-    cancelled: 0
+  return {
+    total, pending, completed,
+    categoryCounts, statusCounts,
+    co2Total
   };
-
-  donations.forEach(d => {
-    const status = (d.pickupStatus || "").toLowerCase();
-    if (statusCounts.hasOwnProperty(status)) {
-      statusCounts[status]++;
-    } else if (!status) {
-      statusCounts.pending++;
-    }
-  });
-
-  const statusData = [
-    statusCounts.pending,
-    statusCounts.scheduled,
-    statusCounts.completed,
-    statusCounts.cancelled
-  ];
-
-  // CATEGORY BAR CHART
-  const categoryCtx = document.getElementById("categoryChart");
-  if (categoryChartInstance) {
-    categoryChartInstance.destroy();
-  }
-  if (categoryCtx) {
-    categoryChartInstance = new Chart(categoryCtx, {
-      type: "bar",
-      data: {
-        labels: ["Men", "Women", "Children", "Other"],
-        datasets: [{
-          label: "Donations",
-          data: categoryData
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            precision: 0
-          }
-        }
-      }
-    });
-  }
-
-  // STATUS DOUGHNUT CHART
-  const statusCtx = document.getElementById("statusChart");
-  if (statusChartInstance) {
-    statusChartInstance.destroy();
-  }
-  if (statusCtx) {
-    statusChartInstance = new Chart(statusCtx, {
-      type: "doughnut",
-      data: {
-        labels: statusLabels,
-        datasets: [{
-          data: statusData
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "bottom"
-          }
-        },
-        cutout: "60%"
-      }
-    });
-  }
 }
 
-//  TABLE RENDER + STATUS UPDATE + SHOW ITEMS
+/* EVENT — STATUS DROPDOWN CHANGE */
+document.addEventListener("change", (e) => {
+  const dropdown = e.target.closest("select[data-donation-status]");
+  if (!dropdown) return;
 
-function populateDonationsTable(donations) {
-  if (!donations.length) {
-    donationsTableBody.innerHTML = `
-      <tr>
-        <td colspan="6" class="text-center text-muted py-4">
-          No donations have been submitted yet.
-        </td>
-      </tr>
+  const id = dropdown.getAttribute("data-donation-status");
+  const newStatus = dropdown.value;
+
+  updateDonationStatus(id, newStatus);
+});
+
+/* ============================================================
+   LOAD CHARITY REQUESTS
+============================================================ */
+async function loadCharityRequests() {
+  const snap = await getDocs(collection(db, "charityRequests"));
+
+  if (snap.empty) {
+    charityRequestsTableBody.innerHTML = `
+      <tr><td colspan="5" class="text-center text-muted py-4">No requests submitted.</td></tr>
     `;
+    charityRequestsCountEl.textContent = "0";
     return;
   }
 
-  donationsTableBody.innerHTML = "";
+  let count = 0;
+  const rows = [];
 
-  donations.forEach(d => {
-    // Prepare items array (new or legacy)
-    let items = [];
-    if (Array.isArray(d.items) && d.items.length) {
-      items = d.items;
-    } else {
-      items = [{
-        itemName:      d.itemName || "Untitled item",
-        itemCategory:  d.itemCategory || "other",
-        itemCondition: d.itemCondition || "unknown",
-        itemDescription: d.itemDescription || ""
-      }];
+  snap.forEach(requestSnap => {
+    const r = requestSnap.data();
+    count++;
+
+    let itemList = `<ul class="mb-0">`;
+    r.items.forEach(i => {
+      itemList += `<li>${i.quantity} × ${i.itemName} (${i.category})</li>`;
+    });
+    itemList += "</ul>";
+
+    rows.push(`
+      <tr>
+        <td>${r.charityName || "Unknown charity"}</td>
+        <td>${itemList}</td>
+        <td><span class="badge bg-${r.status === "approved" ? "success" : r.status === "rejected" ? "danger" : "warning"} text-light">
+          ${r.status}
+        </span></td>
+        <td>${formatDate(r.createdAt)}</td>
+        <td>
+          <button class="btn btn-sm btn-success me-2" data-action="approve" data-id="${requestSnap.id}">Approve</button>
+          <button class="btn btn-sm btn-danger" data-action="reject" data-id="${requestSnap.id}">Reject</button>
+        </td>
+      </tr>
+    `);
+  });
+
+  charityRequestsTableBody.innerHTML = rows.join("");
+  charityRequestsCountEl.textContent = count.toString();
+}
+
+/* HANDLE APPROVE / REJECT OF CHARITY REQUESTS */
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+
+  const id = btn.getAttribute("data-id");
+  const action = btn.getAttribute("data-action");
+
+  await updateDoc(doc(db, "charityRequests", id), {
+    status: action === "approve" ? "approved" : "rejected"
+  });
+
+  loadCharityRequests();
+});
+
+/* ============================================================
+   CHARTS
+============================================================ */
+function buildCategoryChart(canvas, data) {
+  new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["Men", "Women", "Children", "Other"],
+      datasets: [{
+        label: "Donations",
+        data: [
+          data.men || 0,
+          data.women || 0,
+          data.children || 0,
+          data.other || 0
+        ],
+        backgroundColor: ["#4e79a7", "#f28e2b", "#e15759", "#76b7b2"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
     }
-
-    const firstItem = items[0];
-    const extraCount = items.length - 1;
-
-    const createdAtDisplay = d.createdAt ? formatDate(d.createdAt) : "—";
-    const pickupDisplay = d.pickupDate
-      ? `${d.pickupDate} ${d.pickupTime || ""}`.trim()
-      : "—";
-
-    const statusValue = (d.pickupStatus || "pending").toLowerCase();
-
-    // Main row
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>
-        <div class="fw-semibold small">
-          ${firstItem.itemName || "Untitled item"} 
-          (${(firstItem.itemCategory || "other")} – ${(firstItem.itemCondition || "unknown")})
-        </div>
-        <div class="text-muted small">${createdAtDisplay}</div>
-        ${
-          extraCount > 0
-            ? `<button type="button" class="btn btn-link btn-sm p-0 toggle-items-btn" data-id="${d.id}">
-                 Show ${extraCount} more
-               </button>`
-            : ""
-        }
-      </td>
-      <td class="small">
-        <div>${d.name || "Unknown donor"}</div>
-        <div class="text-muted small">${d.email || ""}</div>
-      </td>
-      <td class="small text-capitalize">${firstItem.itemCategory || "—"}</td>
-      <td class="small text-capitalize">${firstItem.itemCondition || "—"}</td>
-      <td class="small">${pickupDisplay}</td>
-      <td>
-        <select class="form-select form-select-sm donation-status-select" data-id="${d.id}">
-          <option value="pending"   ${statusValue === "pending" ? "selected" : ""}>Pending</option>
-          <option value="scheduled" ${statusValue === "scheduled" ? "selected" : ""}>Scheduled</option>
-          <option value="completed" ${statusValue === "completed" ? "selected" : ""}>Completed</option>
-          <option value="cancelled" ${statusValue === "cancelled" ? "selected" : ""}>Cancelled</option>
-        </select>
-      </td>
-    `;
-
-    donationsTableBody.appendChild(row);
-
-    // Details row (hidden by default)
-    const detailsRow = document.createElement("tr");
-    detailsRow.classList.add("donation-items-row", "d-none");
-    detailsRow.setAttribute("data-details-for", d.id);
-
-    const itemsHtml = items.map((item, idx) => `
-      <div class="mb-2">
-        <div class="fw-semibold small">
-          ${item.itemName || "Untitled item"}
-          (${(item.itemCategory || "other")} – ${(item.itemCondition || "unknown")})
-        </div>
-        ${
-          item.itemDescription
-            ? `<div class="text-muted small">Description: ${item.itemDescription}</div>`
-            : ""
-        }
-      </div>
-      ${idx < items.length - 1 ? "<hr class='my-1'>" : ""}
-    `).join("");
-
-    detailsRow.innerHTML = `
-      <td colspan="6">
-        <div class="small">
-          ${itemsHtml}
-        </div>
-      </td>
-    `;
-
-    donationsTableBody.appendChild(detailsRow);
-  });
-
-  // Attach change handlers for all selects
-  const selects = donationsTableBody.querySelectorAll(".donation-status-select");
-  selects.forEach(sel => {
-    sel.addEventListener("change", async (e) => {
-      const donationId = e.target.getAttribute("data-id");
-      const newStatus  = e.target.value;
-
-      try {
-        await updateDoc(doc(db, "donations", donationId), {
-          pickupStatus: newStatus
-        });
-        console.log(`Updated ${donationId} to status "${newStatus}"`);
-
-        // Reload to refresh summary + charts
-        await loadDashboardData();
-      } catch (err) {
-        console.error("Error updating status:", err);
-        alert("Failed to update status. Please try again.");
-      }
-    });
-  });
-
-  // Attach show/hide handlers for "Show more" buttons
-  const toggleButtons = donationsTableBody.querySelectorAll(".toggle-items-btn");
-  toggleButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.getAttribute("data-id");
-      const detailsRow = donationsTableBody.querySelector(`tr[data-details-for="${id}"]`);
-      if (!detailsRow) return;
-
-      const isHidden = detailsRow.classList.contains("d-none");
-      if (isHidden) {
-        detailsRow.classList.remove("d-none");
-        btn.textContent = "Hide items";
-      } else {
-        detailsRow.classList.add("d-none");
-        const extra = detailsRow.querySelectorAll(".fw-semibold.small").length - 1;
-        btn.textContent = extra > 0 ? `Show ${extra} more` : "Show items";
-      }
-    });
   });
 }
+
+function buildStatusChart(canvas, data) {
+  new Chart(canvas, {
+    type: "doughnut",
+    data: {
+      labels: ["Pending", "Scheduled", "Completed", "Cancelled"],
+      datasets: [{
+        data: [
+          data.pending || 0,
+          data.scheduled || 0,
+          data.completed || 0,
+          data.cancelled || 0
+        ],
+        backgroundColor: ["#f1c40f", "#3498db", "#2ecc71", "#e74c3c"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom" } }
+    }
+  });
+}
+
+/* ============================================================
+   INITIAL PAGE LOAD
+============================================================ */
+async function initDashboard() {
+  const donations = await loadDonations();
+  await loadCharityRequests();
+
+  totalDonationsEl.textContent = donations.total;
+  pendingPickupsEl.textContent = donations.pending;
+  completedPickupsEl.textContent = donations.completed;
+  adminTotalCo2El.textContent = donations.co2Total.toFixed(1) + " kg";
+  donationCountLabelEl.textContent = `${donations.total} records`;
+
+  buildCategoryChart(categoryChartCanvas, donations.categoryCounts);
+  buildStatusChart(statusChartCanvas, donations.statusCounts);
+}
+
+initDashboard();

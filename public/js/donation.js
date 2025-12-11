@@ -18,12 +18,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const db = getFirestore(app);
 const auth = getAuth(app);
 
-const donationForm   = document.getElementById("donationForm");
+const donationForm = document.getElementById("donationForm");
 const itemsContainer = document.getElementById("itemsContainer");
-const addItemBtn     = document.getElementById("addItemBtn");
+const addItemBtn = document.getElementById("addItemBtn");
 
 function createDonationItem() {
   const div = document.createElement("div");
@@ -38,8 +38,7 @@ function createDonationItem() {
 
     <div class="mb-3">
       <label class="form-label fw-semibold">Item Name <span class="text-danger">*</span></label>
-      <input type="text" class="form-control itemName" placeholder="e.g. Winter Jacket" required>
-      <div class="invalid-feedback">Please enter the item name.</div>
+      <input type="text" class="form-control itemName" required>
     </div>
 
     <div class="mb-3">
@@ -51,7 +50,6 @@ function createDonationItem() {
         <option value="children">Children</option>
         <option value="other">Other</option>
       </select>
-      <div class="invalid-feedback">Please choose a category.</div>
     </div>
 
     <div class="mb-3">
@@ -62,15 +60,14 @@ function createDonationItem() {
         <option value="good">Good</option>
         <option value="used">Used</option>
       </select>
-      <div class="invalid-feedback">Please select the condition.</div>
     </div>
 
     <div class="mb-3">
       <label class="form-label fw-semibold">Description</label>
-      <textarea class="form-control itemDescription" rows="2"
-                placeholder="Additional details (optional)"></textarea>
+      <textarea class="form-control itemDescription" rows="2"></textarea>
     </div>
   `;
+
   return div;
 }
 
@@ -96,36 +93,6 @@ function calculateCO2(category) {
   return 1.0;
 }
 
-function buildCO2Table(itemsWithCO2) {
-  let rows = "";
-  itemsWithCO2.forEach(item => {
-    rows += `
-      <tr>
-        <td>${item.itemName}</td>
-        <td>${item.itemCategory}</td>
-        <td>${item.itemCondition}</td>
-        <td>${item.co2.toFixed(1)} kg</td>
-      </tr>
-    `;
-  });
-
-  return `
-    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Category</th>
-          <th>Condition</th>
-          <th>CO₂ Saved</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows}
-      </tbody>
-    </table>
-  `;
-}
-
 donationForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -140,16 +107,15 @@ donationForm?.addEventListener("submit", async (e) => {
     return;
   }
 
-  const donorName   = document.getElementById("donorName")?.value.trim();
-  const donorPhone  = document.getElementById("donorPhone")?.value.trim();
-  const donorEmail  = document.getElementById("donorEmail")?.value.trim();
+  const donorName = document.getElementById("donorName")?.value.trim();
+  const donorPhone = document.getElementById("donorPhone")?.value.trim();
+  const donorEmail = document.getElementById("donorEmail")?.value.trim();
   const pickupAddress = document.getElementById("pickupAddress")?.value.trim();
-  const pickupDate    = document.getElementById("pickupDate")?.value;
-  const pickupTime    = document.getElementById("pickupTime")?.value;
+  const pickupDate = document.getElementById("pickupDate")?.value;
+  const pickupTime = document.getElementById("pickupTime")?.value;
 
   const allItemBlocks = document.querySelectorAll(".donation-item");
   const items = [];
-  const itemsWithCO2 = [];
   let totalCO2 = 0;
 
   allItemBlocks.forEach(block => {
@@ -165,19 +131,10 @@ donationForm?.addEventListener("submit", async (e) => {
       itemName: name,
       itemCategory: category,
       itemCondition: condition,
-      itemDescription: description
-    });
-
-    itemsWithCO2.push({
-      itemName: name,
-      itemCategory: category,
-      itemCondition: condition,
       itemDescription: description,
       co2
     });
   });
-
-  const co2TableHTML = buildCO2Table(itemsWithCO2);
 
   try {
     await setDoc(doc(db, "users", user.uid), {
@@ -186,7 +143,7 @@ donationForm?.addEventListener("submit", async (e) => {
       email: donorEmail,
       address: pickupAddress,
       role: "DONOR",
-      updatedAt: Date.now(),
+      updatedAt: Date.now()
     }, { merge: true });
 
     await addDoc(collection(db, "donations"), {
@@ -194,7 +151,7 @@ donationForm?.addEventListener("submit", async (e) => {
       name: donorName,
       phone: donorPhone,
       email: donorEmail,
-      items: itemsWithCO2,
+      items: items,
       pickupAddress,
       pickupDate,
       pickupTime,
@@ -206,11 +163,13 @@ donationForm?.addEventListener("submit", async (e) => {
     await emailjs.send("service_v2omfm9", "template_eojqr6d", {
       name: donorName,
       email: donorEmail,
-      co2_total: totalCO2.toFixed(1),
-      co2_table: co2TableHTML
+      co2_total: totalCO2.toFixed(1)
     });
 
-    alert("Your donation has been submitted successfully!\nTotal CO₂ saved: " + totalCO2.toFixed(1) + " kg");
+    alert(
+      "Your donation has been submitted successfully!\n" +
+      "Total CO₂ saved: " + totalCO2.toFixed(1) + " kg"
+    );
 
     donationForm.reset();
     donationForm.classList.remove("was-validated");

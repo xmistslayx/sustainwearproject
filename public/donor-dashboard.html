@@ -6,19 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My Donations | SustainWear</title>
 
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-
-  <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-  >
-
-  <!-- Custom Styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:,">
 </head>
@@ -28,60 +17,48 @@
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm py-2">
   <div class="container">
-
     <a class="navbar-brand fw-bold" href="/">SustainWear</a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-      <!-- NAV LINKS -->
       <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
 
-        <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
 
-        <!-- DONOR LINKS -->
+        <!-- DONOR -->
         <li id="nav-donor" class="nav-item d-none">
           <a class="nav-link" href="/donate.html">Donate</a>
         </li>
+
         <li id="nav-donor-dashboard" class="nav-item d-none">
           <a class="nav-link active" href="/donor-dashboard.html">My Dashboard</a>
         </li>
 
-        <!-- CHARITY LINKS -->
+        <!-- CHARITY -->
         <li id="nav-charity-stock" class="nav-item d-none">
           <a class="nav-link" href="/Charity/stock.html">Stock</a>
         </li>
+
         <li id="nav-charity-cart" class="nav-item d-none">
           <a class="nav-link" href="/Charity/cart.html">Cart (0)</a>
         </li>
 
-        <!-- ADMIN LINK -->
+        <!-- ADMIN -->
         <li id="nav-admin" class="nav-item d-none">
-          <a class="nav-link" href="/dashboard.html">Dashboard</a>
+          <a class="nav-link" href="/Admin/dashboard.html">Dashboard</a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="/aboutpage.html">About Us</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/aboutpage.html">About Us</a></li>
 
       </ul>
 
-      <!-- AUTH AREA -->
+      <!-- USER MENU -->
       <div class="d-flex align-items-center">
+        <a id="loginBtn" href="/login.html" class="btn btn-outline-primary px-3 py-1">Login / Register</a>
 
-        <!-- LOGGED OUT -->
-        <a id="loginBtn" href="/login.html"
-           class="btn btn-outline-primary px-3 py-1">
-          Login / Register
-        </a>
-
-        <!-- LOGGED IN -->
         <div id="userMenu" class="dropdown d-none">
           <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 px-3 py-1"
                   data-bs-toggle="dropdown">
@@ -92,87 +69,72 @@
             <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
           </ul>
         </div>
-
       </div>
 
     </div>
   </div>
 </nav>
 
-
 <!-- ================= MAIN CONTENT ================= -->
 <main class="py-4">
   <div class="container">
 
-    <!-- PAGE HEADER -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
       <div>
         <h1 class="h3 fw-bold mb-1">My Donations</h1>
-        <p class="text-muted mb-0 small">
-          Review your past donations and see your impact.
-        </p>
+        <p class="text-muted mb-0 small">Review your past donations and see your impact.</p>
       </div>
       <span class="badge bg-success-subtle text-success small">Donor dashboard</span>
     </div>
 
-    <!-- STATS CARDS -->
+    <!-- Summary Cards -->
     <div class="row g-3 mb-4">
 
       <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
-          <div class="card-body d-flex align-items-center justify-content-between">
+          <div class="card-body d-flex justify-content-between">
             <div>
-              <p class="text-muted text-uppercase small mb-1">Total donations</p>
+              <p class="text-muted small mb-1">Total donations</p>
               <h4 class="fw-bold mb-0" id="totalDonations">0</h4>
             </div>
-            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-                 style="width:44px;height:44px;">
-              <i class="bi bi-bag-heart fs-5 text-success"></i>
-            </div>
+            <i class="bi bi-bag-heart fs-4 text-success"></i>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
-          <div class="card-body d-flex align-items-center justify-content-between">
+          <div class="card-body d-flex justify-content-between">
             <div>
-              <p class="text-muted text-uppercase small mb-1">Total items donated</p>
+              <p class="text-muted small mb-1">Total items donated</p>
               <h4 class="fw-bold mb-0" id="totalItems">0</h4>
             </div>
-            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-                 style="width:44px;height:44px;">
-              <i class="bi bi-box-seam fs-5 text-primary"></i>
-            </div>
+            <i class="bi bi-box-seam fs-4 text-primary"></i>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
-          <div class="card-body d-flex align-items-center justify-content-between">
+          <div class="card-body d-flex justify-content-between">
             <div>
-              <p class="text-muted text-uppercase small mb-1">Total CO₂ saved</p>
-              <!-- Placeholder – value will be wired when we add CO2 logic -->
+              <p class="text-muted small mb-1">Total CO₂ saved</p>
               <h4 class="fw-bold mb-0" id="totalCo2">0 kg</h4>
             </div>
-            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-                 style="width:44px;height:44px;">
-              <i class="bi bi-globe2 fs-5 text-info"></i>
-            </div>
+            <i class="bi bi-globe2 fs-4 text-info"></i>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- DONATION TABLE -->
+    <!-- Donation History -->
     <div class="card shadow-sm border-0">
       <div class="card-body">
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold mb-0">Donation history</h6>
-          <span class="small text-muted" id="donationCountLabel">0 records</span>
+        <div class="d-flex justify-content-between mb-3">
+          <h6 class="fw-bold">Donation history</h6>
+          <span class="text-muted small" id="donationCountLabel">0 records</span>
         </div>
 
         <div class="table-responsive">
@@ -189,17 +151,11 @@
             </thead>
             <tbody id="donationsTableBody">
               <tr>
-                <td colspan="6" class="text-center text-muted py-4">
-                  Loading your donations…
-                </td>
+                <td colspan="6" class="text-center text-muted py-4">Loading your donations…</td>
               </tr>
             </tbody>
           </table>
         </div>
-
-        <p class="small text-muted mb-0">
-          Only you can see your donation history.
-        </p>
 
       </div>
     </div>
@@ -207,332 +163,53 @@
   </div>
 </main>
 
-
-<!-- ================= MODAL: DONATION DETAILS ================= -->
-<div class="modal fade" id="donationDetailsModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+<!-- ================= DONATION DETAILS MODAL ================= -->
+<div class="modal fade" id="donationDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">Donation details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                aria-label="Close"></button>
+        <h5 class="modal-title">Donation Details</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
 
-        <div class="mb-3">
-          <p class="mb-1 small text-muted">Order #</p>
-          <p class="mb-2" id="modalOrderId"></p>
+        <p><strong>Order #:</strong> <span id="modalOrderId"></span></p>
+        <p><strong>Date:</strong> <span id="modalDate"></span></p>
+        <p><strong>Status:</strong> <span id="modalStatus"></span></p>
 
-          <p class="mb-1 small text-muted">Date</p>
-          <p class="mb-2" id="modalDate"></p>
+        <hr>
 
-          <p class="mb-1 small text-muted">Status</p>
-          <p class="mb-2" id="modalStatus"></p>
-        </div>
+        <h6 class="fw-bold">Items Donated</h6>
 
-        <h6 class="fw-bold mb-2">Items in this donation</h6>
         <div class="table-responsive">
           <table class="table table-sm">
             <thead class="table-light">
               <tr>
-                <th>Item</th>
+                <th>Name</th>
                 <th>Category</th>
                 <th>Condition</th>
                 <th>Description</th>
               </tr>
             </thead>
-            <tbody id="modalItemsBody">
-              <!-- Filled dynamically -->
-            </tbody>
+            <tbody id="modalItemsBody"></tbody>
           </table>
         </div>
 
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm"
-                data-bs-dismiss="modal">
-          Close
-        </button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
 
     </div>
   </div>
 </div>
 
-
-<!-- ================= FOOTER ================= -->
-<footer class="mt-5 pt-5 pb-3 bg-dark text-light">
-  <div class="container">
-    <div class="row g-4">
-
-      <div class="col-md-4">
-        <h5 class="fw-bold mb-3">SustainWear</h5>
-        <p class="small text-secondary">
-          Giving clothes a second life — built by students to promote
-          sustainable fashion and community support.
-        </p>
-      </div>
-
-      <div class="col-md-4">
-        <h6 class="fw-bold mb-3">Quick Links</h6>
-        <ul class="list-unstyled small" id="footer-links"></ul>
-      </div>
-
-      <div class="col-md-4">
-        <h6 class="fw-bold mb-3">Connect</h6>
-        <div class="d-flex gap-3 fs-5">
-          <a href="#"><i class="bi bi-github"></i></a>
-          <a href="#"><i class="bi bi-twitter"></i></a>
-          <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
-        </div>
-        <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
-      </div>
-
-    </div>
-
-    <hr class="border-secondary my-4">
-
-    <div class="text-center small text-secondary">
-      © 2025 SustainWear — Built with Firebase, Bootstrap, and teamwork.
-    </div>
-  </div>
-</footer>
-
-
-<!-- ================= GLOBAL APP SCRIPT ================= -->
+<!-- ================= SCRIPTS ================= -->
 <script type="module" src="/js/app.js"></script>
-
-<!-- ================= PAGE LOGIC ================= -->
-<script type="module">
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-  import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    orderBy,
-    getDocs,
-    doc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  const auth = getAuth();
-  const db = getFirestore();
-
-  // Nav & footer elements
-  const donorNav = document.getElementById("nav-donor");
-  const donorDashboardNav = document.getElementById("nav-donor-dashboard");
-  const charityStockNav = document.getElementById("nav-charity-stock");
-  const charityCartNav = document.getElementById("nav-charity-cart");
-  const adminNav = document.getElementById("nav-admin");
-  const footerLinks = document.getElementById("footer-links");
-
-  // Stats elements
-  const totalDonationsEl = document.getElementById("totalDonations");
-  const totalItemsEl = document.getElementById("totalItems");
-  const totalCo2El = document.getElementById("totalCo2");
-  const donationCountLabel = document.getElementById("donationCountLabel");
-  const tableBody = document.getElementById("donationsTableBody");
-
-  // Modal elements
-  const modalOrderId = document.getElementById("modalOrderId");
-  const modalDate = document.getElementById("modalDate");
-  const modalStatus = document.getElementById("modalStatus");
-  const modalItemsBody = document.getElementById("modalItemsBody");
-
-  // Keep donations in memory for the modal
-  let donations = [];
-
-  function setFooter(role) {
-    footerLinks.innerHTML = `
-      <li><a href="/">Home</a></li>
-      <li><a href="/aboutpage.html">About Us</a></li>
-    `;
-
-    if (role === "DONOR") {
-      footerLinks.innerHTML += `<li><a href="/donate.html">Donate</a></li>`;
-      footerLinks.innerHTML += `<li><a href="/donor-dashboard.html">My Dashboard</a></li>`;
-    }
-
-    if (role === "CHARITY") {
-      footerLinks.innerHTML += `<li><a href="/Charity/stock.html">Stock</a></li>`;
-      footerLinks.innerHTML += `<li><a href="/Charity/cart.html">Cart</a></li>`;
-    }
-
-    if (role === "ADMIN") {
-      footerLinks.innerHTML += `<li><a href="/Admin/dashboard.html">Dashboard</a></li>`;
-    }
-  }
-
-  function formatDate(ts) {
-    if (!ts || !ts.toDate) return "—";
-    const d = ts.toDate();
-    return d.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    });
-  }
-
-  function shortId(id) {
-    return id ? id.substring(0, 6).toUpperCase() : "";
-  }
-
-  function renderDonations() {
-    if (!donations.length) {
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="6" class="text-center text-muted py-4">
-            You haven't made any donations yet.
-          </td>
-        </tr>
-      `;
-      totalDonationsEl.textContent = "0";
-      totalItemsEl.textContent = "0";
-      totalCo2El.textContent = "0 kg";
-      donationCountLabel.textContent = "0 records";
-      return;
-    }
-
-    let totalItems = 0;
-    let totalCo2 = 0; // placeholder – will be real when CO₂ logic is added
-
-    tableBody.innerHTML = "";
-
-    donations.forEach((donation, index) => {
-      const items = Array.isArray(donation.items) ? donation.items : [];
-      const itemsCount = items.length;
-      totalItems += itemsCount;
-
-      // Placeholder CO₂ per donation (0 until we implement logic)
-      const co2Saved = donation.co2Saved ?? 0;
-      totalCo2 += co2Saved;
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${shortId(donation.id)}</td>
-        <td>${formatDate(donation.createdAt)}</td>
-        <td>${itemsCount}</td>
-        <td>${donation.status || "pending"}</td>
-        <td>${co2Saved ? co2Saved + " kg" : "—"}</td>
-        <td class="text-end">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            data-bs-toggle="modal"
-            data-bs-target="#donationDetailsModal"
-            data-index="${index}"
-          >
-            View details
-          </button>
-        </td>
-      `;
-      tableBody.appendChild(tr);
-    });
-
-    totalDonationsEl.textContent = String(donations.length);
-    totalItemsEl.textContent = String(totalItems);
-    totalCo2El.textContent = totalCo2 ? `${totalCo2} kg` : "0 kg";
-    donationCountLabel.textContent = `${donations.length} record${donations.length !== 1 ? "s" : ""}`;
-  }
-
-  // Handle modal show event
-  const detailsModalEl = document.getElementById("donationDetailsModal");
-  if (detailsModalEl) {
-    detailsModalEl.addEventListener("show.bs.modal", (event) => {
-      const button = event.relatedTarget;
-      if (!button) return;
-
-      const index = button.getAttribute("data-index");
-      const donation = donations[index];
-      if (!donation) return;
-
-      modalOrderId.textContent = shortId(donation.id);
-      modalDate.textContent = formatDate(donation.createdAt);
-      modalStatus.textContent = donation.status || "pending";
-
-      const items = Array.isArray(donation.items) ? donation.items : [];
-      if (!items.length) {
-        modalItemsBody.innerHTML = `
-          <tr>
-            <td colspan="4" class="text-muted text-center">No items recorded for this donation.</td>
-          </tr>
-        `;
-      } else {
-        modalItemsBody.innerHTML = "";
-        items.forEach(item => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${item.name || item.itemName || "—"}</td>
-            <td>${item.category || "—"}</td>
-            <td>${item.condition || "—"}</td>
-            <td>${item.description || ""}</td>
-          `;
-          modalItemsBody.appendChild(tr);
-        });
-      }
-    });
-  }
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      // Not signed in – go to login
-      window.location.href = "/login.html";
-      return;
-    }
-
-    // Get user role
-    const userSnap = await getDoc(doc(db, "users", user.uid));
-    const role = userSnap.exists() ? userSnap.data().role : "DONOR";
-
-    // Role guard – only donors allowed here
-    if (role !== "DONOR") {
-      window.location.href = "/";
-      return;
-    }
-
-    // Show donor nav links
-    donorNav?.classList.remove("d-none");
-    donorDashboardNav?.classList.remove("d-none");
-
-    // Build footer for donor
-    setFooter("DONOR");
-
-    // Fetch this donor's donations (newest first)
-    const q = query(
-      collection(db, "donations"),
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc")
-    );
-
-    try {
-      const snap = await getDocs(q);
-      donations = snap.docs.map(docSnap => ({
-        id: docSnap.id,
-        ...docSnap.data(),
-      }));
-
-      renderDonations();
-    } catch (err) {
-      console.error("Error loading donations:", err);
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="6" class="text-center text-danger py-4">
-            Could not load your donations. Please try again later.
-          </td>
-        </tr>
-      `;
-    }
-  });
-</script>
-
-<!-- Bootstrap JS -->
+<script type="module" src="/js/donor-dashboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

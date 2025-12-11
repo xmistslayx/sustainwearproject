@@ -9,107 +9,169 @@ import {
   query,
   where,
   orderBy,
-  getDocs
+  getDocs,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-import { app, db } from "./app.js";
+const auth = getAuth();
+const db = getFirestore();
 
-const auth = getAuth(app);
+// NAVBAR elements
+const donorNav = document.getElementById("nav-donor");
+const donorDashboardNav = document.getElementById("nav-donor-dashboard");
+const charityStockNav = document.getElementById("nav-charity-stock");
+const charityCartNav = document.getElementById("nav-charity-cart");
+const adminNav = document.getElementById("nav-admin");
+const loginBtn = document.getElementById("loginBtn");
+const userMenu = document.getElementById("userMenu");
 
-// Page elements
-const statTotalDonations = document.getElementById("statTotalDonations");
-const statTotalItems = document.getElementById("statTotalItems");
+// Dashboard elements
+const totalDonationsEl = document.getElementById("totalDonations");
+const totalItemsEl = document.getElementById("totalItems");
+const totalCo2El = document.getElementById("totalCo2");
+const donationCountLabel = document.getElementById("donationCountLabel");
+const tableBody = document.getElementById("donationsTableBody");
 
-const donationEmpty = document.getElementById("donationEmpty");
-const donationTableWrapper = document.getElementById("donationTableWrapper");
-const donationTableBody = document.getElementById("donationTableBody");
+// Modal elements
+const modalOrderId = document.getElementById("modalOrderId");
+const modalDate = document.getElementById("modalDate");
+const modalStatus = document.getElementById("modalStatus");
+const modalItemsBody = document.getElementById("modalItemsBody");
 
-// Format timestamp → readable date
-function formatDate(timestamp) {
-  const date = new Date(timestamp);
-  return date.toLocaleDateString("en-UK", {
+let donations = [];
+
+function formatDate(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined, {
     year: "numeric",
     month: "short",
     day: "numeric"
   });
 }
 
-onAuthStateChanged(auth, async (user) => {
-    console.log("AUTH UID:", user?.uid);
+function shortId(id) {
+  return id ? id.substring(0, 6).toUpperCase() : "";
+}
 
+function renderDonations() {
+  if (!donations.length) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center text-muted py-4">
+          You haven't made any donations yet.
+        </td>
+      </tr>
+    `;
+    totalDonationsEl.textContent = "0";
+    totalItemsEl.textContent = "0";
+    totalCo2El.textContent = "0 kg";
+    donationCountLabel.textContent = "0 records";
+    return;
+  }
+
+  let totalItems = 0;
+  let totalCo2 = 0;
+  tableBody.innerHTML = "";
+
+  donations.forEach((donation, index) => {
+    const items = Array.isArray(donation.items) ? donation.items : [];
+    const itemCount = items.length;
+    totalItems += itemCount;
+
+    const co2 = donation.co2_total || 0;
+    totalCo2 += co2;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${shortId(donation.id)}</td>
+      <td>${formatDate(donation.createdAt)}</td>
+      <td>${itemCount}</td>
+      <td>${donation.pickupStatus || "pending"}</td>
+      <td>${co2.toFixed(1)} kg</td>
+      <td class="text-end">
+        <button class="btn btn-sm btn-outline-secondary"
+          data-bs-toggle="modal"
+          data-bs-target="#donationDetailsModal"
+          data-index="${index}">
+          View details
+        </button>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  totalDonationsEl.textContent = donations.length;
+  totalItemsEl.textContent = totalItems;
+  totalCo2El.textContent = `${totalCo2.toFixed(1)} kg`;
+  donationCountLabel.textContent = `${donations.length} record${donations.length !== 1 ? "s" : ""}`;
+}
+
+// Modal show handler
+document
+  .getElementById("donationDetailsModal")
+  .addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    const index = button.getAttribute("data-index");
+    const donation = donations[index];
+
+    modalOrderId.textContent = shortId(donation.id);
+    modalDate.textContent = formatDate(donation.createdAt);
+    modalStatus.textContent = donation.pickupStatus || "pending";
+
+    modalItemsBody.innerHTML = donation.items
+      .map(
+        item => `
+      <tr>
+        <td>${item.itemName}</td>
+        <td>${item.itemCategory}</td>
+        <td>${item.itemCondition}</td>
+        <td>${item.itemDescription || ""}</td>
+      </tr>
+    `
+      )
+      .join("");
+  });
+
+// Auth handling
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    alert("Please sign in to view your dashboard.");
     window.location.href = "/login.html";
     return;
   }
 
-  try {
-    // Load all donations for this user (sorted newest → oldest)
-    const donationsRef = collection(db, "donations");
-    const q = query(
-      donationsRef,
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc")
-    );
+  const userSnap = await getDoc(doc(db, "users", user.uid));
+  const role = userSnap.data()?.role || "DONOR";
 
-    const snap = await getDocs(q);
+  // Hide login, show menu
+  loginBtn?.classList.add("d-none");
+  userMenu?.classList.remove("d-none");
 
-    if (snap.empty) {
-      donationEmpty.classList.remove("d-none");
-      return;
-    }
-
-    const allDonations = [];
-    let totalItems = 0;
-
-    snap.forEach((doc) => {
-      const data = doc.data();
-      allDonations.push(data);
-
-      // Count items for stats
-      if (Array.isArray(data.items)) {
-        totalItems += data.items.length;
-      }
-    });
-
-    // Update stats
-    statTotalDonations.textContent = allDonations.length;
-    statTotalItems.textContent = totalItems;
-
-    // Show ONLY the latest 5 donations
-    const recent = allDonations.slice(0, 5);
-
-    donationTableWrapper.classList.remove("d-none");
-
-    donationTableBody.innerHTML = recent
-      .map((donation) => {
-        const date = donation.createdAt
-          ? formatDate(donation.createdAt)
-          : "N/A";
-
-        const itemCount = Array.isArray(donation.items)
-          ? donation.items.length
-          : 0;
-
-        const pickup = donation.pickupDate
-          ? `${donation.pickupDate} ${donation.pickupTime || ""}`
-          : "N/A";
-
-        const status = donation.pickupStatus || "pending";
-
-        return `
-          <tr>
-            <td>${date}</td>
-            <td>${itemCount} item(s)</td>
-            <td>${pickup}</td>
-            <td><span class="badge bg-secondary text-light">${status}</span></td>
-          </tr>
-        `;
-      })
-      .join("");
-
-  } catch (err) {
-    console.error("Dashboard error:", err);
-    alert("Could not load your dashboard.");
+  // Role-based nav
+  if (role === "DONOR") {
+    donorNav?.classList.remove("d-none");
+    donorDashboardNav?.classList.remove("d-none");
   }
+
+  if (role === "CHARITY") {
+    charityStockNav?.classList.remove("d-none");
+    charityCartNav?.classList.remove("d-none");
+  }
+
+  if (role === "ADMIN") {
+    adminNav?.classList.remove("d-none");
+  }
+
+  // Load donation history
+  const q = query(
+    collection(db, "donations"),
+    where("userId", "==", user.uid),
+    orderBy("createdAt", "desc")
+  );
+
+  const snap = await getDocs(q);
+  donations = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+  renderDonations();
 });

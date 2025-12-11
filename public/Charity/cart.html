@@ -78,10 +78,14 @@
 </nav>
 
 <!-- ================= PAGE CONTENT ================= -->
-<main class="page-container">
+<main class="page-container container py-5">
 
   <h1>Your Stock Request</h1>
-  <p class="subtext">Review the items you want to request. You can edit or remove before submitting.</p>
+  <p class="subtext mb-4">Review the items you want to request. You can edit or remove them before submitting.</p>
+
+  <!-- ========== CHARITY NAME FIELD (NEW) ========== -->
+  <h5 class="fw-bold mt-3">Charity Name</h5>
+  <input id="charityNameInput" class="form-control mb-4" placeholder="Enter your charity name…" required>
 
   <div id="cart-empty" class="alert alert-info d-none">
     Your cart is empty. Add items from the stock page.
@@ -194,12 +198,10 @@
     const role = snap.exists() ? snap.data().role : "DONOR";
 
     if (role === "DONOR") donorNav.classList.remove("d-none");
-
     if (role === "CHARITY") {
       charityStock.classList.remove("d-none");
       charityCart.classList.remove("d-none");
     }
-
     if (role === "ADMIN") adminNav.classList.remove("d-none");
 
     setFooter(role);
