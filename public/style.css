@@ -154,3 +154,176 @@ footer hr {
 .admin-stat-card {
   border-radius: 0.75rem;
 }
+
+/* Shared Global Styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8fafc;
+}
+
+main { flex: 1 0 auto; }
+footer { flex-shrink: 0; }
+
+/* Google Button */
+.google-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  border: 1px solid #dadce0;
+  background: #fff;
+  color: #3c4043;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  font-weight: 500;
+  transition: .15s ease-in-out;
+}
+
+.google-btn:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+/* Avatar */
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+/* Footer */
+footer {
+  background: #212529;
+  color: #f8f9fa;
+  padding-top: 3rem;
+  padding-bottom: 1rem;
+}
+
+footer a {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: #20c997 !important;
+}
+
+footer hr {
+  opacity: 0.15;
+}
+
+.footer-note {
+  font-size: 0.9rem;
+  color: #adb5bd;
+}
+
+/* Navbar Active Link */
+.nav-link.active {
+  font-weight: 600;
+  color: #20c997 !important;
+  pointer-events: none;
+  text-decoration: underline;
+}
+
+/* Donation Page */
+.donate-section {
+  background: #ffffff;
+  padding: 3rem 1rem;
+}
+
+.form-control, .form-select {
+  border-radius: .5rem;
+}
+
+/* ===== ADMIN DASHBOARD LAYOUT ===== */
+
+.admin-body {
+  background-color: #f1f3f5;
+}
+
+.admin-wrapper {
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: 260px;
+  background-color: #212529;
+  color: #f8f9fa;
+  padding: 1.5rem 1.25rem;
+}
+
+.admin-brand {
+  font-size: 1rem;
+}
+
+.admin-brand i {
+  font-size: 1.4rem;
+}
+
+.admin-nav-link {
+  color: #ced4da;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+}
+
+.admin-nav-link i {
+  font-size: 1.1rem;
+}
+
+.admin-nav-link:hover {
+  color: #ffffff;
+}
+
+.admin-nav-link.active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Main */
+.admin-main {
+  background-color: #f8fafc;
+  padding: 1.5rem;
+}
+
+.admin-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-content {
+  padding: 0;
+}
+
+/* Stat cards */
+.admin-stat-card {
+  border-radius: 0.75rem;
+}
+
+/* ===== Generic layout helpers for content pages ===== */
+.page-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 3rem;
+}
+
+.page-container h1 {
+  margin-bottom: 0.5rem;
+}
+
+.subtext {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}

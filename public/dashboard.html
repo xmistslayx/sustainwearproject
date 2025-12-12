@@ -5,257 +5,314 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Dashboard | SustainWear</title>
 
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-
-  <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-  />
-
-  <!-- Global Styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
-
   <link rel="icon" href="data:,">
 </head>
+
 <body>
-  <!-- Navbar (same as other pages) -->
-  <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="/">SustainWear</a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm py-2">
+  <div class="container">
 
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="donate.html">Donate</a></li>
+    <a class="navbar-brand fw-bold" href="/">SustainWear</a>
 
-          <!-- ADMIN-ONLY DASHBOARD LINK -->
-          <li class="nav-item">
-            <a id="dashboardLink" class="nav-link d-none" href="dashboard.html">Dashboard</a>
-          </li>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-        </ul>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-        <div class="d-flex align-items-center gap-3 ms-3">
-          <!-- Signed OUT -->
-          <button id="loginBtn" class="google-btn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
-            Sign in with Google
+      <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+
+        <!-- ADMIN ONLY -->
+        <li id="nav-admin" class="nav-item d-none">
+          <a class="nav-link active" href="dashboard.html">Dashboard</a>
+        </li>
+
+        <li class="nav-item"><a class="nav-link" href="aboutpage.html">About Us</a></li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+        <a id="loginBtn" href="/login.html" class="btn btn-outline-primary px-3 py-1">Login / Register</a>
+
+        <div id="userMenu" class="dropdown d-none">
+          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2"
+                  data-bs-toggle="dropdown">
+            <img id="userAvatar" class="avatar">
+            <span id="userName" class="d-none d-sm-inline small"></span>
           </button>
-
-          <!-- Signed IN -->
-          <div id="userMenu" class="dropdown d-none">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-2" data-bs-toggle="dropdown">
-              <img id="userAvatar" class="avatar" alt="User Avatar">
-              <span id="userName" class="d-none d-sm-inline small"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="py-4">
-    <div class="container">
-
-      <!-- Header -->
-      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-        <div>
-          <h1 class="h3 fw-bold mb-1">Admin dashboard</h1>
-          <p class="text-muted mb-0 small">
-            Overview of clothing donations and pickup activity.
-          </p>
-        </div>
-        <span class="badge bg-dark-subtle text-dark small">
-          Admin only
-        </span>
-      </div>
-
-      <!-- SUMMARY CARDS -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Total donations</p>
-                <h4 class="fw-bold mb-0" id="totalDonations">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-bag-heart fs-5 text-success"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Pending pickups</p>
-                <h4 class="fw-bold mb-0" id="pendingPickups">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-clock-history fs-5 text-warning"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted text-uppercase small mb-1">Completed pickups</p>
-                <h4 class="fw-bold mb-0" id="completedPickups">0</h4>
-              </div>
-              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
-                <i class="bi bi-check2-circle fs-5 text-primary"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHARTS ROW -->
-      <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">Donations per category</h6>
-              <canvas id="categoryChart" height="200"></canvas>
-              <p class="small text-muted mt-2 mb-0">
-                Shows how many donations are coming from each clothing category.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">Pickup status breakdown</h6>
-              <canvas id="statusChart" height="200"></canvas>
-              <p class="small text-muted mt-2 mb-0">
-                Overview of pending, scheduled, completed, and cancelled pickups.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DONATIONS TABLE -->
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0">All donations</h6>
-            <span class="small text-muted" id="donationCountLabel">0 records</span>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table table-sm align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th>Item</th>
-                  <th>Category</th>
-                  <th>Condition</th>
-                  <th>Donor</th>
-                  <th>Pickup date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="donationsTableBody">
-                <tr>
-                  <td colspan="6" class="text-center text-muted py-4">
-                    Loading donations…
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="small text-muted mb-0">
-            Only admins can view and update donation records. Donors can only see their own submissions.
-          </p>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <!-- Footer (same as other pages) -->
-  <footer>
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <h5 class="fw-bold mb-3">SustainWear</h5>
-          <p class="small text-secondary">
-            Giving clothes a second life — built by students to promote sustainable fashion and community support.
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <h6 class="fw-bold mb-3 text-uppercase">Quick Links</h6>
-          <ul class="list-unstyled small">
-            <li><a href="/">Home</a></li>
-            <li><a href="donate.html">Donate</a></li>
-            <li><a href="dashboard.html">My Dashboard</a></li>
-            <li><a href="about.html">About</a></li>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
           </ul>
         </div>
+      </div>
 
-        <div class="col-md-4">
-          <h6 class="fw-bold mb-3 text-uppercase">Connect</h6>
-          <div class="d-flex gap-3 fs-5">
-            <a href="#"><i class="bi bi-github"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="#"><i class="bi bi-envelope"></i></a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="py-4">
+  <div class="container">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">Admin Dashboard</h1>
+        <p class="text-muted mb-0 small">Overview of donations, pickups & charity stock requests.</p>
+      </div>
+      <span class="badge bg-dark-subtle text-dark small">Admin only</span>
+    </div>
+
+    <!-- DASHBOARD CARDS -->
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Total donations</p>
+              <h4 class="fw-bold mb-0" id="totalDonations">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-bag-heart fs-5 text-success"></i>
+            </div>
           </div>
-          <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
         </div>
       </div>
 
-      <hr class="border-secondary my-4">
-      <div class="text-center footer-note">
-        © 2025 SustainWear — Built with Firebase, Bootstrap, and teamwork.
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Pending pickups</p>
+              <h4 class="fw-bold mb-0" id="pendingPickups">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-clock-history fs-5 text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Completed pickups</p>
+              <h4 class="fw-bold mb-0" id="completedPickups">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-check2-circle fs-5 text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Charity Requests</p>
+              <h4 class="fw-bold mb-0" id="charityRequestsCount">0</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-clipboard-check fs-5 text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CO₂ SAVED -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted text-uppercase small mb-1">Total CO₂ saved</p>
+              <h4 class="fw-bold mb-0" id="adminTotalCo2">0 kg</h4>
+            </div>
+            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+              <i class="bi bi-globe2 fs-5 text-success"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CHARITY STOCK REQUESTS TABLE -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">Charity Stock Requests</h6>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Charity Name</th>
+                <th>Requested Items</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="charityRequestsTableBody">
+              <tr><td colspan="5" class="text-center text-muted py-4">Loading requests…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </footer>
 
-  <!-- Firebase / App logic (auth, navbar, etc.) -->
-  <script type="module" src="js/app.js"></script>
+    <!-- CHARTS -->
+    <div class="row g-4 mb-4">
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Donations per category</h6>
+            <canvas id="categoryChart" height="200"></canvas>
+            <p class="small text-muted mt-2 mb-0">Items donated by category.</p>
+          </div>
+        </div>
+      </div>
 
-  <!-- Dashboard logic -->
-  <script type="module" src="js/dashboard.js"></script>
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Pickup Status Breakdown</h6>
+            <canvas id="statusChart" height="200"></canvas>
+            <p class="small text-muted mt-2 mb-0">Pending, Scheduled, Completed and Cancelled pickups.</p>
+          </div>
+        </div>
+      </div>
 
-  <!-- Highlight current nav link -->
-  <script>
-    const currentPage = window.location.pathname.split("/").pop() || "index.html";
-    document.querySelectorAll(".nav-link").forEach(link => {
-      const linkPage = link.getAttribute("href");
-      if (currentPage === linkPage) {
-        link.classList.add("active");
-        link.removeAttribute("href");
-      }
-    });
-  </script>
+    </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DONATION TABLE -->
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0">All Donations</h6>
+          <span class="small text-muted" id="donationCountLabel">0 records</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Item</th>
+                <th>Donor</th>
+                <th>Category</th>
+                <th>Condition</th>
+                <th>Pickup date</th>
+                <th>Update Status</th>
+              </tr>
+            </thead>
+            <tbody id="donationsTableBody">
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">Loading donations…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="mt-5 pt-5 pb-3 bg-dark text-light">
+  <div class="container">
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <h5 class="fw-bold mb-3">SustainWear</h5>
+        <p class="small text-secondary">
+          Giving clothes a second life — promoting sustainable fashion.
+        </p>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3">Quick Links</h6>
+        <ul class="list-unstyled small" id="footer-links"></ul>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3">Connect</h6>
+        <div class="d-flex gap-3 fs-5">
+          <a href="#"><i class="bi bi-github"></i></a>
+          <a href="#"><i class="bi bi-twitter"></i></a>
+          <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="border-secondary my-4">
+
+    <div class="text-center small text-secondary">
+      © 2025 SustainWear — Built by SHU Students.
+    </div>
+  </div>
+</footer>
+
+<!-- GLOBAL AUTH -->
+<script type="module" src="js/app.js"></script>
+
+<!-- ROLE CHECK -->
+<script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const auth = getAuth();
+  const db = getFirestore();
+
+  const adminNav = document.getElementById("nav-admin");
+  const footerLinks = document.getElementById("footer-links");
+
+  function setFooter(role) {
+    footerLinks.innerHTML = `
+      <li><a href="/">Home</a></li>
+      <li><a href="aboutpage.html">About Us</a></li>
+    `;
+    if (role === "ADMIN") {
+      footerLinks.innerHTML += `<li><a href="dashboard.html">Dashboard</a></li>`;
+    }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("You must be signed in as an admin.");
+      window.location.href = "/";
+      return;
+    }
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if (!snap.exists() || snap.data().role !== "ADMIN") {
+      alert("You do not have permission to view this page.");
+      window.location.href = "/";
+      return;
+    }
+
+    adminNav.classList.remove("d-none");
+    setFooter("ADMIN");
+  });
+</script>
+
+<!-- CHARTS + DASHBOARD LOGIC -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="js/dashboard.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
