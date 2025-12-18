@@ -27,7 +27,7 @@
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="/">SustainWear</a>
+    <a class="navbar-brand fw-bold" href="index.html">SustainWear</a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -39,7 +39,7 @@
       <ul class="navbar-nav ms-auto me-4 d-flex align-items-center gap-3">
 
         <!-- Always visible -->
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
 
         <!-- DONOR NAV -->
         <li id="nav-donor" class="nav-item d-none">
@@ -62,7 +62,7 @@
         </span>
 
         <!-- Always visible -->
-        <li class="nav-item"><a class="nav-link" href="/aboutpage.html">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
 
       </ul>
 
@@ -202,10 +202,45 @@
 </main>
 
 <!-- FOOTER -->
-<footer>
+<footer class="mt-5 pt-5 pb-3 bg-dark text-light">
   <div class="container">
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <h5 class="fw-bold mb-3">SustainWear</hh5>
+        <p class="small text-secondary">
+          Giving clothes a second life — built by students to promote
+          sustainable fashion and community support.
+        </p>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3">Quick Links</h6>
+        <ul class="list-unstyled small" id="footer-links">
+           <li><a class="small text-secondary mt-2 mb-0" href="index.html">Home</a></li>
+            <li><a class="small text-secondary mt-2 mb-0" href="about.html">About</a></li>
+            <li><a class="small text-secondary mt-2 mb-0" href="donate.html">Donate</a></li>
+            <li><a class="small text-secondary mt-2 mb-0" href="donor-dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3">Connect</h6>
+        <div class="d-flex gap-3 fs-5">
+          <a href="#"><i class="bi bi-github"></i></a>
+          <a href="#"><i class="bi bi-twitter"></i></a>
+          <a href="mailto:sustainwear.team@gmail.com"><i class="bi bi-envelope"></i></a>
+        </div>
+        <p class="small text-secondary mt-2 mb-0">sustainwear.team@gmail.com</p>
+      </div>
+
+    </div>
+
     <hr class="border-secondary my-4">
-    <div class="text-center footer-note">© 2025 SustainWear — Built with Firebase & teamwork.</div>
+
+    <div class="text-center footer-note small text-secondary">
+      © 2025 SustainWear — Built with Firebase, Bootstrap, and teamwork.
+    </div>
   </div>
 </footer>
 
